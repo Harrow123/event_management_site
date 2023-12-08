@@ -12,9 +12,9 @@
     <!-- Navigation bar, logo, etc. -->
     <nav>
         <ul>
-            <li><a href="/home">Home</a></li>
+            <li><a href="<?php echo $base_url; ?>">Home</a></li>
             <li><a href="/events/list">Events</a></li>
-            <li><a href="/users/profile">Profile</a></li>
+            <li><a href="<?php echo $base_url; ?>users/profile">Profile</a></li>
             <!-- Additional links here -->
         </ul>
     </nav>

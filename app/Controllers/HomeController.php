@@ -5,6 +5,6 @@ class HomeController {
         $featuredEvents = []; // Assume this is fetched from the model
         
         // Load the home view
-        include '../app/Views/home/index.php';
+        include __DIR__ . '/../Views/home/index.php';
     }
 }

@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$db   = 'event_management_db';
+$db   = 'event-management-db';
 $user = 'root';
 $pass = '';
 $charset = 'utf8mb4';
