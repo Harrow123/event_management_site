@@ -10,7 +10,7 @@
 <body>
 <header>
     <!-- Navigation bar, logo, etc. -->
-    <nav>
+    <nav class="flex">
         <ul>
             <li><a href="<?php echo $base_url; ?>">Home</a></li>
             <li><a href="/events/list">Events</a></li>

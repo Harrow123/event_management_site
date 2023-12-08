@@ -1,4 +1,4 @@
-<div class="container mx-auto px-4 bg-red-400">
+<div class="container mx-auto px-4">
     <section class="hero">
         <h1>Welcome to the Event Management System</h1>
         <p>Find and manage events with ease.</p>
