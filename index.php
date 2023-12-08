@@ -3,6 +3,8 @@ require_once "app/Config/database.php";
 require_once "app/Controllers/UserController.php";
 require_once "app/Controllers/HomeController.php";
 
+$twig = require_once 'bootstrap.php';
+
 // Base URL for routing
 $base_url = '/event_management_site/';
 
@@ -22,7 +24,7 @@ switch ($uri) {
     case '':
         case '/':
             $controller = new HomeController();
-            $controller->index();
+            $controller->index($twig);
             break;
     case 'users/profile':
         $userId = $_GET['id'] ?? 1; // default to user ID 1
@@ -37,3 +39,5 @@ switch ($uri) {
 
 // Include the footer
 include 'app/Views/layouts/footer.php';
+
+// var_dump($twig);

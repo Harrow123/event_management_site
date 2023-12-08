@@ -1,0 +1,19 @@
+{
+  "name": "assignment3/event_management_site",
+  "type": "project",
+  "require": {
+    "twig/twig": "^3.8"
+  },
+  "license": "IIS",
+  "autoload": {
+    "psr-4": {
+      "Assignment3\\EventManagementSite\\": "app/"
+    }
+  },
+  "authors": [
+    {
+      "name": "developer",
+      "email": "developer@hotmail.com"
+    }
+  ]
+}
