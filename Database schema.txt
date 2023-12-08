@@ -1,0 +1,75 @@
+-- Users Table
+CREATE TABLE Users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    username VARCHAR(255),
+    email VARCHAR(255),
+    password VARCHAR(255),
+    gender VARCHAR(50),
+    address VARCHAR(255),
+    profile_picture VARCHAR(255),
+    is_admin BOOLEAN,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+-- Events Table
+CREATE TABLE Events (
+    event_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    description TEXT NOT NULL,
+    start_date DATETIME NOT NULL,
+    end_date DATETIME NOT NULL,
+    venue VARCHAR(255) NOT NULL,
+    organizer_id INT,
+    is_approved BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (organizer_id) REFERENCES Users(user_id)
+);
+
+-- Bookings Table
+CREATE TABLE Bookings (
+    booking_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    event_id INT,
+    booking_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (event_id) REFERENCES Events(event_id)
+);
+
+-- Event Categories Table
+CREATE TABLE Event_Categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+-- Event_Category_Mapping Table
+CREATE TABLE Event_Category_Mapping (
+    event_id INT,
+    category_id INT,
+    FOREIGN KEY (event_id) REFERENCES Events(event_id),
+    FOREIGN KEY (category_id) REFERENCES Event_Categories(category_id)
+);
+
+-- Reviews Table
+CREATE TABLE Reviews (
+    review_id INT AUTO_INCREMENT PRIMARY KEY,
+    event_id INT,
+    user_id INT,
+    rating INT NOT NULL,
+    comment TEXT,
+    FOREIGN KEY (event_id) REFERENCES Events(event_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+-- Admin Dashboard Table
+CREATE TABLE Admin_Dashboard (
+    setting_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    value TEXT NOT NULL
+);
+
+-- Insert default admin credentials
+INSERT INTO Users (username, email, password, is_admin) VALUES 
+('admin', 'admin@example.com', SHA2('@dministrat0r', 256), TRUE);
