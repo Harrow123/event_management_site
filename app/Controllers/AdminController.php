@@ -50,5 +50,10 @@ class AdminController {
         // Delete a user
     }
 
+    public function approveEvent($eventId) {
+        $this->eventModel->approveEvent($eventId);
+        // Redirect or show confirmation
+    }
+
     // Additional admin methods as needed...
 }

@@ -33,4 +33,8 @@ class Event {
     public function deleteEvent($eventId) {
         // Delete the specified event
     }
+
+    public function approveEvent($eventId) {
+        // Set is_approved to true for the event
+    }
 }

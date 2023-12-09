@@ -21,4 +21,11 @@ class EventController {
     }
 
     // Add methods for creating, updating, and deleting events
+    public function createEvent($eventData) {
+        // Validate and create event
+    }
+
+    public function deleteEvent($eventId) {
+        // Validate and create event
+    }
 }
