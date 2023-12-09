@@ -32,32 +32,64 @@ class AuthController {
         }
     }
 
-    public function showRegistrationPage() {
-        echo $this->twig->render('auth/register.html.twig');
+    // public function showRegistrationPage() {
+    //     echo $this->twig->render('auth/register.html.twig');
+    // }
+
+    public function showRegistrationPage($error = null, $userData = null) {
+        echo $this->twig->render('auth/register.html.twig', ['error' => $error, 'userData' => $userData]);
     }
+    
 
     public function register($userData) {
-        if (Validator::validateEmail($userData['email']) &&
-            Validator::validatePasswordStrength($userData['password']) &&
-            Validator::validateUsername($userData['username'])) {
-
-            // Additional validation checks...
-
-            $this->userModel->register(
-                $userData['name'],
-                $userData['username'],
-                $userData['email'],
-                $userData['password'],
-                $userData['gender'],
-                $userData['address']
-            );
-
-            // Redirect after successful registration
-            header('Location: /login');
-            exit;
-         } else {
-            // Show registration error
-            echo $this->twig->render('auth/register.html.twig', ['error' => 'Invalid input.']);
+        $name = $userData['name'];
+        $username = $userData['username'];
+        $email = $userData['email'];
+        $password = $userData['password'];
+        $confirmPassword = $userData['confirm_password'];
+        $gender = $userData['gender'];
+        $address = $userData['address'];
+        $profilePicture = $_FILES['profile_picture']['name'];
+    
+        // Perform validation checks
+        $validationErrors = [];
+    
+        if (!$this->validator::validateEmail($email)) {
+            $validationErrors[] = 'Invalid email address.';
         }
+    
+        if (!$this->validator::validatePasswordStrength($password)) {
+            $validationErrors[] = 'Password must be at least 6 characters long and contain numbers and letters.';
+        }
+    
+        if (!$this->validator::validateUsername($username)) {
+            $validationErrors[] = 'Username must be alphanumeric and 5-15 characters long.';
+        }
+    
+        if ($password !== $confirmPassword) {
+            $validationErrors[] = 'Passwords do not match.';
+        }
+    
+        if (empty($validationErrors)) {
+            // Handle profile picture upload
+            $targetDir = __DIR__ . '/../../public/uploads/'; // Specify your upload directory
+            $targetFile = $targetDir . basename($profilePicture);
+    
+            // Move the uploaded file to the specified directory
+            if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $targetFile)) {
+                // File upload successful, proceed with registration
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                $this->userModel->register($name, $username, $email, $hashedPassword, $gender, $address, $profilePicture);
+                // Redirect after successful registration
+                header('Location: /auth/login');
+                exit;
+            } else {
+                $this->showRegistrationPage(implode('<br>', $validationErrors), $userData);
+            }
+        }
+    
+        // Validation errors occurred or file upload failed, show registration page with errors
+        $this->showRegistrationPage(implode('<br>', $validationErrors));
     }
+    
 }

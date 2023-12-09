@@ -1,12 +1,20 @@
-<form action="register" method="post">
+<form class="flex flex-col" action="register" method="post" enctype="multipart/form-data">
     <!-- Include all necessary fields like name, email, etc. -->
-    <input type="text" name="name" placeholder="Full Name" required>
-    <input type="text" name="username" placeholder="Username" required>
-    <input type="email" name="email" placeholder="Email" required>
+    <input type="text" name="name" placeholder="Full Name" required value="{{ userData['name'] ?? '' }}">
+    <input type="text" name="username" placeholder="Username" required value="{{ userData['username'] ?? '' }}">
+    <input type="email" name="email" placeholder="Email" required value="{{ userData['email'] ?? '' }}">
     <input type="password" name="password" placeholder="Password" required>
-    <input type="password" name="comfirm_password" placeholder="Confirm Password" required>
+    <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+    <textarea name="address" placeholder="Address" required>{{ userData['address'] ?? '' }}</textarea>
+    <select name="gender" required value="{{ userData['gender'] ?? '' }}">
+        <option value="" disabled selected>Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+    </select>
+    <input type="file" name="profile_picture" accept="image/*">
     <button type="submit">Register</button>
     {% if error %}
-        <p>{{ error }}</p>
+        <p class="error">{{ error }}</p>
     {% endif %}
 </form>
