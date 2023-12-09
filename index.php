@@ -32,6 +32,10 @@ switch ($uri) {
         $controller->getUserProfile($userId);
         break;
     // More routes here
+    case 'events':
+        $controller = new EventController($twig, $pdo);
+        $controller -> listEvents();
+        break;
     default:
         // Page not found or default case
         echo "<p>Page not found</p>";
