@@ -3,19 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Management Site</title>
-    <!-- Tailwind CSS Link -->
+    <title>Event Discovery Platform</title>
     <link href="/event_management_site/public/css/tailwind.css" rel="stylesheet">
 </head>
 <body>
-<header>
-    <!-- Navigation bar, logo, etc. -->
-    <nav class="flex">
-        <ul>
-            <li><a href="<?php echo $base_url; ?>">Home</a></li>
-            <li><a href="/events/list">Events</a></li>
-            <li><a href="<?php echo $base_url; ?>users/profile">Profile</a></li>
-            <!-- Additional links here -->
-        </ul>
-    </nav>
-</header>
+    <header class="bg-gradient-to-r from-green-400 to-blue-500 text-white">
+        <nav class="container mx-auto flex items-center justify-between p-4">
+            <!-- Logo and brand name -->
+            <a href="<?php echo $base_url; ?>" class="text-2xl font-bold">Evently</a>
+            <!-- Navigation Links -->
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="<?php echo $base_url; ?>events" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Find Events</a>
+                <a href="<?php echo $base_url; ?>about" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">About</a>
+                <a href="<?php echo $base_url; ?>contact" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Contact</a>
+                <!-- Conditional authentication links -->
+                <?php if ($authentication->isLoggedIn()) : ?>
+                    <a href="<?php echo $base_url; ?>users/profile" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Profile</a>
+                    <a href="<?php echo $base_url; ?>logout" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Logout</a>
+                <?php else : ?>
+                    <a href="<?php echo $base_url; ?>auth/login" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Login</a>
+                    <a href="<?php echo $base_url; ?>auth/register" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Register</a>
+                <?php endif; ?>
+            </div>
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden flex items-center px-3 py-2 border rounded text-white border-white">
+                <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0z"/><path d="M0 9h20v2H0z"/><path d="M0 15h20v2H0z"/></svg>
+            </button>
+        </nav>
+    </header>
+

@@ -1,6 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-export const content = ["./app/Views/**/*.php"];
-export const theme = {
-  extend: {},
+module.exports = {
+  content: ["./app/Views/**/*.php", "./app/Views/**/*.html.twig"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
 };
-export const plugins = [];

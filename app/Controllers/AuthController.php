@@ -105,7 +105,9 @@ class AuthController {
 
             if (empty($validationErrors)) {
                 // Handle profile picture upload
-                $profilePicture = $this->uploadProfilePicture($profilePictureFile);
+                $profilePicture = $this->uploadProfilePicture($profilePicture);
+                // echo $profilePicture;
+                // exit();
                 
                 // Generate a unique UID
                 $uniqueUid = uniqid();
@@ -113,13 +115,10 @@ class AuthController {
                 // Append the UID to the profile picture filename to avoid confusion
                 $profilePictureFilename = $uniqueUid . '_' . $profilePicture;
 
-                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-                $this->userModel->register($name, $username, $email, $hashedPassword, $gender, $address, $profilePictureFilename);
+                $this->userModel->register($name, $username, $email, $password, $gender, $address, $profilePictureFilename);
 
                 // Redirect after successful registration
                 header('Location: login');
-    
             }else {
             // Validation errors occurred or file upload failed, show registration page with errors
             $this->showRegistrationPage(implode('<br>', $validationErrors), $userData);
