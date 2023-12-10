@@ -31,6 +31,12 @@ switch ($uri) {
         $controller = new HomeController();
         $controller->index($twig);
         break;
+    case 'contact':
+        include 'app/Views/contact.php';
+        break;
+    case 'about':
+        include 'app/Views/about.php';
+        break;
     case 'users/profile':
         $userId = $_GET['id'] ?? 1; // default to user ID 1
         $controller = new UserController($pdo);
