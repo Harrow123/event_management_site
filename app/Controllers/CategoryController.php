@@ -1,8 +1,8 @@
 <?php
 
 class CategoryController {
-    public function __construct($twig, $pdo) {
-        $this->twig = $twig;
+    public function __construct($pdo) {
+        $this->pdo = $pdo;
     }
 
     public function getAllCategories() {

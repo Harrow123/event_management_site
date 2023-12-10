@@ -1,8 +1,19 @@
 <?php
-class HomeController {
-    public function index($twig) {
+class HomeController { 
+    private $categoryController;
+    private $twig;
+
+    public function __construct($twig, $categoryController) {
+        $this->twig = $twig;
+        $this->categoryController = $categoryController;
+    }
+
+    public function index() {
         // Fetch featured events or any other necessary data
         // $featuredEvents = []; // Assume this is fetched from the model
+
+        // Fetch categories using the CategoryController
+        $categories = $this->categoryController->getAllCategories(); 
 
         // Dummy events, these will be fetched from the database using the model
         $featuredEvents = [
@@ -28,6 +39,6 @@ class HomeController {
         
 
         // Render the home view using Twig
-        echo $twig->render('home/index.html.twig', ['featuredEvents' => $featuredEvents]);
+        echo $this->twig->render('home/index.html.twig', ['featuredEvents' => $featuredEvents, 'categories' => $categories]);
     }
 }

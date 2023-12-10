@@ -19,6 +19,7 @@ $base_url = '/event_management_site/';
 
 $uri = str_replace($base_url, '', $_SERVER['REQUEST_URI']);
 $authController = new AuthController($twig, $pdo);
+$categoryController = new CategoryController($pdo);
 
 // Debugging: Print the modified URI
 // echo "Modified URI: " . $uri . "<br>";
@@ -26,12 +27,11 @@ $authController = new AuthController($twig, $pdo);
 // Include the header
 include 'app/Views/layouts/header.php';
 
-// Simple router example
 switch ($uri) {
     case '':
     case '/':
-        $controller = new HomeController();
-        $controller->index($twig);
+        $controller = new HomeController($twig, $categoryController);
+        $controller->index();
         break;
     case 'contact':
         include 'app/Views/contact.php';

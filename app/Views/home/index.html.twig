@@ -15,7 +15,7 @@
             <!-- Category Filters -->
             <div class="flex flex-wrap -mx-2">
                 <!-- Dynamically generate category buttons -->
-                {% for category categories %}
+                {% for category in categories %}
                     <div class="px-2">
                         <button onclick="location.href='<?= $base_url . 'events?category=' . $category['id'] ?>'" class="px-4 py-2 bg-white border rounded-md shadow-sm hover:bg-blue-100 transition">
                             {{ category.name }}
