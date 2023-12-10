@@ -20,6 +20,7 @@ $base_url = '/event_management_site/';
 $uri = str_replace($base_url, '', $_SERVER['REQUEST_URI']);
 $authController = new AuthController($twig, $pdo);
 $categoryController = new CategoryController($pdo);
+$eventModel = new Event($pdo);
 
 // Debugging: Print the modified URI
 // echo "Modified URI: " . $uri . "<br>";
@@ -30,7 +31,7 @@ include 'app/Views/layouts/header.php';
 switch ($uri) {
     case '':
     case '/':
-        $controller = new HomeController($twig, $categoryController);
+        $controller = new HomeController($twig, $categoryController, $eventModel);
         $controller->index();
         break;
     case 'contact':
@@ -40,7 +41,7 @@ switch ($uri) {
         include 'app/Views/about.php';
         break;
     case 'users/profile':
-        $userId = $_GET['id'] ?? 1; // default to user ID 1
+        $userId = $_SESSION['user_id']; // default to user ID 1
         $controller = new UserController($twig,$pdo);
         $controller->getUserProfile($userId);
         break;

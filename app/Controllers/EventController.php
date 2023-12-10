@@ -71,6 +71,7 @@ class EventController {
             $venue = $this->validator::sanitizeInput($_POST['venue']);
             $categories = $_POST['categories'];
             $image = $_FILES['event_image'];
+            $isFeatured = isset($_POST['is_featured']) ? 1 : 0;
     
             // Validate and sanitize the data as needed
             if (!empty($_FILES['event_image']['name'])) {
@@ -92,6 +93,7 @@ class EventController {
                 'organizer_id' => $_SESSION['user_id'],
                 'is_approved' => 0,
                 'image_path' => $image,
+                'is_featured' => $isFeatured,
             ];
 
             // Get selected category IDs from the form

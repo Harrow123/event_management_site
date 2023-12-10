@@ -14,6 +14,16 @@ class Event {
         return $stmt->fetchAll();
     }
 
+    public function getFeaturedEvents() {
+        // Assuming your database query to fetch featured events
+        // Modify the query according to your database structure
+        $query = "SELECT * FROM Events WHERE is_featured = 1"; // You may have a column 'is_featured' to identify featured events
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getEventById($eventId) {
         // Fetch a single event by its ID
         $stmt = $this->db->prepare("SELECT * FROM Events WHERE event_id = ?");
@@ -42,8 +52,9 @@ class Event {
         $startDate = $eventData['start_date'];
         $endDate = $eventData['end_date'];
         $venue = $eventData['venue'];
-        $organizerId = $eventData['organizer_id']; // Assuming you have the organizer's user_id
+        $organizerId = $eventData['organizer_id'];
         $image_path =$eventData['image_path '];
+        $isFeatured = $eventData['is_featured'];
         
         // Validate event data (you can add more validation as needed)
         if (empty($title) || empty($description) || empty($startDate) || empty($endDate) || empty($venue) || empty($organizerId)) {
@@ -56,8 +67,8 @@ class Event {
             $this->db->beginTransaction();
             
             // Insert event details into the Events table
-            $stmt = $this->db->prepare("INSERT INTO Events (title, description, start_date, end_date, venue, organizer_id, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$title, $description, $startDate, $endDate, $venue, $organizerId, $image_path]);
+            $stmt = $this->db->prepare("INSERT INTO Events (title, description, start_date, end_date, venue, organizer_id, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$title, $description, $startDate, $endDate, $venue, $organizerId, $image_path, $isFeatured]);
             
             // Check if the insertion was successful
             if ($stmt->rowCount() === 0) {
