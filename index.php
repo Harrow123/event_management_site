@@ -13,13 +13,13 @@ $twig = require_once 'bootstrap.php';
 $base_url = '/event_management_site/';
 
 // Debugging: Print the original URI
-echo "Original URI: " . $_SERVER['REQUEST_URI'] . "<br>";
+// echo "Original URI: " . $_SERVER['REQUEST_URI'] . "<br>";
 
 $uri = str_replace($base_url, '', $_SERVER['REQUEST_URI']);
 $authController = new AuthController($twig, $pdo);
 
 // Debugging: Print the modified URI
-echo "Modified URI: " . $uri . "<br>";
+// echo "Modified URI: " . $uri . "<br>";
 
 // Include the header
 include 'app/Views/layouts/header.php';

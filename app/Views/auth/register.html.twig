@@ -1,19 +1,24 @@
-<form class="flex gap-2" action="register" method="post" enctype="multipart/form-data">
-    <input type="text" name="name" placeholder="Full Name" required value="{{ userData['name'] ?? '' }}">
-    <input type="text" name="username" placeholder="Username" required value="{{ userData['username'] ?? '' }}">
-    <input type="email" name="email" placeholder="Email" required value="{{ userData['email'] ?? '' }}">
-    <input type="password" name="password" placeholder="Password" required>
-    <input type="password" name="confirm_password" placeholder="Confirm Password" required>
-    <textarea name="address" placeholder="Address" required>{{ userData['address'] ?? '' }}</textarea>
-    <select name="gender" required value="{{ userData['gender'] ?? '' }}">
-        <option value="" disabled selected>Select Gender</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-        <option value="Other">Other</option>
-    </select>
-    <input type="file" name="profile_picture" accept="image/*">
-    <button type="submit">Register</button>
-    {% if error %}
-        <p class="error">{{ error }}</p>
-    {% endif %}
-</form>
+<div class="form-container my-5">
+    <h2 class="font-semibold text-3xl mb-2">Register</h2>
+
+    <form action="register" method="post" enctype="multipart/form-data">
+        <input class="form-input" type="text" name="name" placeholder="Full Name" required value="{{ userData['name'] ?? '' }}">
+        <input class="form-input" type="text" name="username" placeholder="Username" required value="{{ userData['username'] ?? '' }}">
+        <input class="form-input" type="email" name="email" placeholder="Email" required value="{{ userData['email'] ?? '' }}">
+        <input class="form-input" type="password" name="password" placeholder="Password" required>
+        <input class="form-input" type="password" name="confirm_password" placeholder="Confirm Password" required>
+        <textarea class="form-input" name="address" placeholder="Address" required>{{ userData['address'] ?? '' }}</textarea>
+        <select class="form-input" name="gender" required value="{{ userData['gender'] ?? '' }}">
+            <option value="" disabled selected>Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+        <input class="form-input" type="file" name="profile_picture" accept="image/*">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit">Register</button>
+
+        {% if error %}
+            <p class="error-text">{{ error }}</p>
+        {% endif %}
+    </form>
+</div>
