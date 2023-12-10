@@ -12,84 +12,143 @@ class AuthController {
         $this->validator = new Validator();
     }
 
-    public function showLoginPage() {
-        echo $this->twig->render('auth/login.html.twig');
+    public function showLoginPage($error = null) {
+        echo $this->twig->render('auth/login.html.twig', ['error' => $error]);
     }
 
     public function login($username, $password) {
-        if (Validator::isNotEmpty($username) && Validator::isNotEmpty($password)) {
-            if ($this->userModel->login($username, $password)) {
-                // Redirect to dashboard or home page
-                header('Location: /');
-                exit;
-            } else {
-                // Show login error
-                echo $this->twig->render('auth/login.html.twig', ['error' => 'Invalid credentials.']);
-            }
-        } else {
-            // Show input error
-            echo $this->twig->render('auth/login.html.twig', ['error' => 'Please enter username and password.']);
-        }
-    }
+        $username = trim($username);
+        $password = trim($password);
 
-    // public function showRegistrationPage() {
-    //     echo $this->twig->render('auth/register.html.twig');
-    // }
-
-    public function showRegistrationPage($error = null, $userData = null) {
-        echo $this->twig->render('auth/register.html.twig', ['error' => $error, 'userData' => $userData]);
-    }
-    
-
-    public function register($userData) {
-        $name = $userData['name'];
-        $username = $userData['username'];
-        $email = $userData['email'];
-        $password = $userData['password'];
-        $confirmPassword = $userData['confirm_password'];
-        $gender = $userData['gender'];
-        $address = $userData['address'];
-        $profilePicture = $_FILES['profile_picture']['name'];
-    
         // Perform validation checks
         $validationErrors = [];
-    
-        if (!$this->validator::validateEmail($email)) {
-            $validationErrors[] = 'Invalid email address.';
-        }
-    
-        if (!$this->validator::validatePasswordStrength($password)) {
-            $validationErrors[] = 'Password must be at least 6 characters long and contain numbers and letters.';
+
+        if (empty($username) || empty($password)) {
+            $validationErrors[] = 'Please enter both username and password.';
         }
     
         if (!$this->validator::validateUsername($username)) {
-            $validationErrors[] = 'Username must be alphanumeric and 5-15 characters long.';
+            $validationErrors[] = 'Invalid username format.';
         }
-    
-        if ($password !== $confirmPassword) {
-            $validationErrors[] = 'Passwords do not match.';
+
+        if (!$this->validator::validatePasswordStrength($password)) {
+            $validationErrors[] = 'Invalid password format.';
         }
-    
+
         if (empty($validationErrors)) {
-            // Handle profile picture upload
-            $targetDir = __DIR__ . '/../../public/uploads/'; // Specify your upload directory
-            $targetFile = $targetDir . basename($profilePicture);
-    
-            // Move the uploaded file to the specified directory
-            if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $targetFile)) {
-                // File upload successful, proceed with registration
-                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                $this->userModel->register($name, $username, $email, $hashedPassword, $gender, $address, $profilePicture);
-                // Redirect after successful registration
-                header('Location: /auth/login');
+            if ($this->userModel->login($username, $password)) {
+                // Redirect to dashboard or home page after successful login
+                header('Location: /dashboard'); // Replace with your actual redirect URL
                 exit;
             } else {
-                $this->showRegistrationPage(implode('<br>', $validationErrors), $userData);
+                $validationErrors[] = 'Invalid credentials. Please try again.';
             }
         }
     
-        // Validation errors occurred or file upload failed, show registration page with errors
-        $this->showRegistrationPage(implode('<br>', $validationErrors));
+        // If validation errors occurred or login failed, show login form with errors
+        $this->showLoginPage(implode('<br>', $validationErrors));
+
+        // if (Validator::isNotEmpty($username) && Validator::isNotEmpty($password)) {
+        //     if ($this->userModel->login($username, $password)) {
+        //         // Redirect to dashboard or home page
+        //         header('Location: /');
+        //         exit;
+        //     } else {
+        //         // Show login error
+        //         echo $this->twig->render('auth/login.html.twig', ['error' => 'Invalid credentials.']);
+        //     }
+        // } else {
+        //     // Show input error
+        //     echo $this->twig->render('auth/login.html.twig', ['error' => 'Please enter username and password.']);
+        // }
+    }
+
+    public function showRegistrationPage($error = null, $userData = null) {
+        echo $this->twig->render('auth/register.html.twig', ['error' => $error, 'userData' => $userData]);
+    }    
+
+    public function register($userData) {
+        // Check if the form has been submitted
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Retrieve and sanitize user data
+            $name = $userData['name'];
+            $username = $userData['username'];
+            $email = $userData['email'];
+            $password = $userData['password'];
+            $confirmPassword = $userData['confirm_password'];
+            $gender = $userData['gender'];
+            $address = $userData['address'];
+            $profilePicture = $_FILES['profile_picture']['name'];
+
+            // Perform validation checks
+            $validationErrors = [];
+
+            if (empty($name) || empty($username) || empty($email) || empty($password) || empty($confirmPassword) || empty($gender) || empty($address)) {
+                $validationErrors[] = 'Please fill in all required fields.';
+            }
+
+            if (!$this->validator::validateEmail($email)) {
+                $validationErrors[] = 'Invalid email address.';
+            }
+        
+            if (!$this->validator::validatePasswordStrength($password)) {
+                $validationErrors[] = 'Password must be at least 6 characters long and contain numbers and letters.';
+            }
+        
+            if (!$this->validator::validateUsername($username)) {
+                $validationErrors[] = 'Username must be alphanumeric and 3-15 characters long.';
+            }
+        
+            if ($password !== $confirmPassword) {
+                $validationErrors[] = 'Passwords do not match.';
+            }
+
+            if (empty($validationErrors)) {
+                // Handle profile picture upload
+                $profilePicture = $this->uploadProfilePicture($profilePictureFile);
+                
+                // Generate a unique UID
+                $uniqueUid = uniqid();
+
+                // Append the UID to the profile picture filename to avoid confusion
+                $profilePictureFilename = $uniqueUid . '_' . $profilePicture;
+
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+                $this->userModel->register($name, $username, $email, $hashedPassword, $gender, $address, $profilePictureFilename);
+
+                // Redirect after successful registration
+                header('Location: login');
+    
+            }else {
+            // Validation errors occurred or file upload failed, show registration page with errors
+            $this->showRegistrationPage(implode('<br>', $validationErrors), $userData);
+        }
+        }else {
+            // The form has not been submitted yet, display an empty registration form
+            $this->showRegistrationPage();
+        }
     }
     
+    private function uploadProfilePicture($file) {
+        $uploadDirectory = 'public/uploads/';
+        $defaultPicture = 'default.png';
+    
+        if (isset($file['error']) && $file['error'] === UPLOAD_ERR_OK) {
+            $tmpName = $file['tmp_name'];
+            $fileName = $file['name'];
+    
+            // Generate a unique filename using a combination of UID and the original filename
+            $uniqueUid = uniqid();
+            $uniqueFileName = $uniqueUid . '_' . $fileName;
+    
+            // Move the uploaded file to the upload directory
+            move_uploaded_file($tmpName, $uploadDirectory . $uniqueFileName);
+    
+            return $uniqueFileName;
+        }
+    
+        // If no file is uploaded or an error occurred, use the default picture
+        return $defaultPicture;
+    }
 }

@@ -19,7 +19,7 @@ class Validator {
 
     public static function validateUsername($username) {
         // Example: Check if username is alphanumeric and 5-15 characters long
-        return preg_match('/^[a-zA-Z0-9]{5,15}$/', $username);
+        return preg_match('/^[a-zA-Z0-9]{3,15}$/', $username);
     }
 
     // Other validation methods...
