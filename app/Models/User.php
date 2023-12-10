@@ -55,4 +55,16 @@ class User {
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
+
+    public function getUserEvents($userId) {
+        // Fetch user's events from the database based on user ID
+        $stmt = $this->db->prepare("SELECT * FROM bookings WHERE user_id = ?");
+        $stmt->execute([$userId]);
+        $userEvents = $stmt->fetchAll();
+    
+        // You can further process the $userEvents data as needed, e.g., filter by status, date, etc.
+    
+        return $userEvents;
+    }
+    
 }

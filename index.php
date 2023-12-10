@@ -5,6 +5,7 @@ require_once "app/Controllers/HomeController.php";
 require_once "app/Controllers/AuthController.php";
 require_once "app/Controllers/EventController.php";
 require_once "app/Utils/Authentication.php";
+require_once "app/Controllers/CategoryController.php";
 
 $authentication = new Authentication();
 
@@ -40,7 +41,7 @@ switch ($uri) {
         break;
     case 'users/profile':
         $userId = $_GET['id'] ?? 1; // default to user ID 1
-        $controller = new UserController($pdo);
+        $controller = new UserController($twig,$pdo);
         $controller->getUserProfile($userId);
         break;
     // More routes here
@@ -61,6 +62,22 @@ switch ($uri) {
     case 'events':
         $controller = new EventController($twig, $pdo);
         $controller -> listEvents($twig);
+        break;
+    case 'events/create':
+        $controller = new EventController($twig, $pdo);
+        $controller->createEvent(); // Create a new event
+        break;
+    case 'events/details/{event_id}':
+        // Handle event details page, pass event ID and fetch event details
+        $eventId = $_GET['id'] ?? 1; // Get the event ID from the query parameter
+        $controller = new EventController($twig, $pdo);
+        $controller->eventDetails($eventId);
+        break;
+    case 'users/events':
+        // Handle user's events page, including ongoing, past, and attended events
+        $userId = $_GET['id'] ?? 1; // Get the user ID from the query parameter
+        $controller = new UserController($twig,$pdo);
+        $controller->userEvents($userId);
         break;
     default:
         // Page not found or default case

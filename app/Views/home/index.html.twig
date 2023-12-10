@@ -1,34 +1,47 @@
-<div class="container mx-auto px-4">
-    <section class="hero">
-        <h1>Welcome to the Event Management System</h1>
-        <p>Find and manage events with ease.</p>
+
+<!-- Hero Section with Background Image -->
+<div class="relative bg-cover bg-center bg-no-repeat h-screen" style="background-image: url('public/assets/images/hero-background.jpg');">
+    <div class="container mx-auto px-4 justify-center items-center  h-full text-white">
+        <h1 class="text-6xl font-bold uppercase">Welcome to the Event Management System</h1>
+        <p class="text-xl mt-4">Find and manage events with ease.</p>
+    </div>
+</div>
+
+    <!-- Categories and Search Section -->
+    <section class="bg-gray-100 py-8">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl font-semibold mb-4">Explore Events by Category</h2>
+
+            <!-- Category Filters -->
+            <div class="flex flex-wrap -mx-2">
+                <!-- Dynamically generate category buttons -->
+                {% for category categories %}
+                    <div class="px-2">
+                        <button onclick="location.href='<?= $base_url . 'events?category=' . $category['id'] ?>'" class="px-4 py-2 bg-white border rounded-md shadow-sm hover:bg-blue-100 transition">
+                            {{ category.name }}
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Search Bar -->
+            <div class="flex items-center space-x-4 mt-6">
+                <input type="text" class="w-full px-4 py-2 bg-white border rounded-md shadow-sm focus:ring focus:ring-blue-300" placeholder="Search events...">
+                <button class="px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 transition">Search</button>
+            </div>
+        </div>
     </section>
 
-    <section class="featured-events">
-        <h2>Featured Events</h2>
+    <!-- Featured Events Section -->
+    <section class="container mx-auto px-4 my-8">
+        <h2 class="text-2xl font-semibold mb-4">Featured Events</h2>
         <!-- Loop through featured events and display them -->
+        <!-- Replace with your templating engine or PHP code -->
         {% for event in featuredEvents %}
-            <div class="event">
-                <h3>{{ event.title }}</h3>
+            <div class="event mb-6">
+                <h3 class="text-xl font-semibold">{{ event.title }}</h3>
                 <p>{{ event.description }}</p>
                 <!-- More event details here -->
             </div>
         {% endfor %}
     </section>
-
-    <section class="about">
-        <h2>About Us</h2>
-        <p>
-            Learn more about our mission and services.
-            <!-- Further about us details -->
-        </p>
-    </section>
-</div>
-
-<style>
-    /* Include some inline CSS or link to an external stylesheet */
-</style>
-
-<script>
-    // JavaScript for interactive elements, if any
-</script>
