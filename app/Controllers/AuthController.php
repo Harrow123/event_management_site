@@ -41,7 +41,7 @@ class AuthController {
                 
 
                 // Redirect to home page after successful login
-                header('Location: ' . $base_url);
+                header('Location: /event_management_site');
                 exit;
             } else {
                 $validationErrors[] = 'Invalid credentials. Please try again.';
