@@ -60,7 +60,7 @@ switch ($uri) {
         break;
     case 'events':
         $controller = new EventController($twig, $pdo);
-        $controller -> listEvents();
+        $controller -> listEvents($twig);
         break;
     default:
         // Page not found or default case

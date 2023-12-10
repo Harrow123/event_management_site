@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../Models/Event.php';
 
 class EventController {
     private $twig;
@@ -11,6 +12,7 @@ class EventController {
 
     public function listEvents($twig) {
         // Fetch events from the Event model
+        $events = $this->eventModel->getAllEvents();
         // Render the list.html.twig with fetched events
         echo $this->twig->render('events/list.html.twig', ['events' => $events]);
     }

@@ -1,0 +1,13 @@
+{% block content %}
+    <div class="container mx-auto p-6">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h1 class="text-3xl font-semibold">{{ event.title }}</h1>
+            <p class="text-gray-600 text-sm">{{ event.date }}</p>
+            <img src="{{ event.image_url }}" alt="{{ event.title }}" class="w-full h-60 object-cover rounded mt-4">
+            <p class="text-gray-700 mt-4">{{ event.description }}</p>
+            <div class="mt-6">
+                <a href="{{ path('event_list') }}" class="text-blue-500 hover:underline">Back to Events</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
