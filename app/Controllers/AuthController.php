@@ -37,8 +37,11 @@ class AuthController {
 
         if (empty($validationErrors)) {
             if ($this->userModel->login($username, $password)) {
-                // Redirect to dashboard or home page after successful login
-                header('Location: /dashboard'); // Replace with your actual redirect URL
+                // Set the user ID in the session
+                
+
+                // Redirect to home page after successful login
+                header('Location: ' . $base_url);
                 exit;
             } else {
                 $validationErrors[] = 'Invalid credentials. Please try again.';
@@ -47,20 +50,6 @@ class AuthController {
     
         // If validation errors occurred or login failed, show login form with errors
         $this->showLoginPage(implode('<br>', $validationErrors));
-
-        // if (Validator::isNotEmpty($username) && Validator::isNotEmpty($password)) {
-        //     if ($this->userModel->login($username, $password)) {
-        //         // Redirect to dashboard or home page
-        //         header('Location: /');
-        //         exit;
-        //     } else {
-        //         // Show login error
-        //         echo $this->twig->render('auth/login.html.twig', ['error' => 'Invalid credentials.']);
-        //     }
-        // } else {
-        //     // Show input error
-        //     echo $this->twig->render('auth/login.html.twig', ['error' => 'Please enter username and password.']);
-        // }
     }
 
     public function showRegistrationPage($error = null, $userData = null) {

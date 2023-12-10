@@ -32,6 +32,31 @@ class EventController {
         echo $this->twig->render('events/details.html.twig', ['event' => $event]);
     }
 
+    private function uploadImage($file) {
+        // Define the upload directory
+        $uploadDirectory = __DIR__ . '/../../public/image/event/uploads/';
+    
+        // Check if the upload directory exists; if not, create it
+        if (!file_exists($uploadDirectory)) {
+            mkdir($uploadDirectory, 0755, true);
+        }
+    
+        // Generate a unique filename using a combination of UID and the original filename
+        $uniqueUid = uniqid();
+        $uniqueFileName = $uniqueUid . '_' . $file['name'];
+    
+        // Move the uploaded file to the upload directory
+        $targetFilePath = $uploadDirectory . $uniqueFileName;
+    
+        if (move_uploaded_file($file['tmp_name'], $targetFilePath)) {
+            return 'image/event/uploads/' . $uniqueFileName; // Return the relative path to the image
+        } else {
+            // Handle file upload error, e.g., return an error message or use a default image path
+            return 'image/event/uploads/default.png';
+        }
+    }
+    
+
     // Add methods for creating, updating, and deleting events
     public function createEvent() {
         // Fetch categories from the database (you should have a method in your model for this)
@@ -45,8 +70,17 @@ class EventController {
             $endDate = $this->validator::sanitizeInput($_POST['end_date']);
             $venue = $this->validator::sanitizeInput($_POST['venue']);
             $categories = $_POST['categories'];
+            $image = $_FILES['event_image'];
     
             // Validate and sanitize the data as needed
+            if (!empty($_FILES['event_image']['name'])) {
+                $imagePath = $this->uploadImage($_FILES['event_image']);
+            } else {
+                $imagePath = 'default.png'; // Use a default image if none is uploaded
+            }
+
+            // Use the uploadImage function to handle image upload
+            $imagePath = $this->uploadImage($image);
     
             // Insert event details into the Events table
             $eventData = [
@@ -57,6 +91,7 @@ class EventController {
                 'venue' => $venue,
                 'organizer_id' => $_SESSION['user_id'],
                 'is_approved' => 0,
+                'image_path' => $image,
             ];
 
             // Get selected category IDs from the form

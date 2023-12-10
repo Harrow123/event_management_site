@@ -21,6 +21,20 @@ class Event {
         return $stmt->fetch();
     }
 
+    public function getEventImage($eventId) {
+        $stmt = $this->db->prepare("SELECT image FROM Events WHERE event_id = ?");
+        $stmt->execute([$eventId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if ($result) {
+            return $result['image_path'];
+        } else {
+            // Return a default image path or handle the case when no image is found
+            return 'default.png';
+        }
+    }
+    
+
     public function createEvent($eventData, $categoryIds) {
         // Extract event data from the $eventData array
         $title = $eventData['title'];
@@ -29,6 +43,7 @@ class Event {
         $endDate = $eventData['end_date'];
         $venue = $eventData['venue'];
         $organizerId = $eventData['organizer_id']; // Assuming you have the organizer's user_id
+        $image_path =$eventData['image_path '];
         
         // Validate event data (you can add more validation as needed)
         if (empty($title) || empty($description) || empty($startDate) || empty($endDate) || empty($venue) || empty($organizerId)) {
@@ -37,12 +52,12 @@ class Event {
         }
         
         try {
-            // Begin a database transaction (assuming you have a database connection)
+            // Begin a database transaction
             $this->db->beginTransaction();
             
             // Insert event details into the Events table
-            $stmt = $this->db->prepare("INSERT INTO Events (title, description, start_date, end_date, venue, organizer_id) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$title, $description, $startDate, $endDate, $venue, $organizerId]);
+            $stmt = $this->db->prepare("INSERT INTO Events (title, description, start_date, end_date, venue, organizer_id, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$title, $description, $startDate, $endDate, $venue, $organizerId, $image_path]);
             
             // Check if the insertion was successful
             if ($stmt->rowCount() === 0) {

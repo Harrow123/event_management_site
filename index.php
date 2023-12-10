@@ -69,7 +69,7 @@ switch ($uri) {
         break;
     case 'events/details/{event_id}':
         // Handle event details page, pass event ID and fetch event details
-        $eventId = $_GET['id'] ?? 1; // Get the event ID from the query parameter
+        $eventId = $_GET['event_id'] ?? 1; // Get the event ID from the query parameter
         $controller = new EventController($twig, $pdo);
         $controller->eventDetails($eventId);
         break;
@@ -78,6 +78,10 @@ switch ($uri) {
         $userId = $_GET['id'] ?? 1; // Get the user ID from the query parameter
         $controller = new UserController($twig,$pdo);
         $controller->userEvents($userId);
+        break;
+    case 'auth/logout':
+        $controller = new Authentication();
+        $controller->logout();
         break;
     default:
         // Page not found or default case

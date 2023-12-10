@@ -8,6 +8,7 @@ class Authentication {
         // Clear the session data and destroy the session
         $_SESSION = array();
         session_destroy();
+        header('Location: login');
     }
 
     function isLoggedIn() {

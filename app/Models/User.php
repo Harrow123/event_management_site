@@ -27,7 +27,7 @@ class User {
 
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $this->db->prepare("INSERT INTO Users (name, username, email, password, gender, address, profile_picture, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$name, $username, $email, $hashedPassword, $gender, $address, 0]);
+        $stmt->execute([$name, $username, $email, $hashedPassword, $gender, $address, $profile_picture, 0]);
         // Additional error handling and checks can be added
 
          // Check if the registration was successful
@@ -45,6 +45,7 @@ class User {
 
         if ($user && password_verify($password, $user['password'])) {
             // Set session or token as per your session handling logic
+            $_SESSION['user_id'] = $user['user_id'];
             return true;
         }
         return false;
