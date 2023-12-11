@@ -19,6 +19,10 @@ class UserController {
 
     public function getUserProfile($userId) {
         $user = $this->userModel->getUserById($userId);
+
+        // Append the image URL to each event
+        $user['profile_picture'] = '../public/assets/images/profile_images/' . $user['profile_picture'];
+
         // Load view with user data
         echo $this->twig->render('users/profile.html.twig', ['user' => $user]);
     }
