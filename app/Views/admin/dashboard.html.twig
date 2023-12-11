@@ -1,0 +1,27 @@
+{# {% extends 'base-admin.html.twig' %} #}
+
+{% block content %}
+    <div class="container mx-auto p-6">
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="md:flex md:items-center md:justify-between p-6">
+                <div class="flex-1 min-w-0">
+                    <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                        Admin Dashboard
+                    </h2>
+                </div>
+                <div class="mt-4 flex md:mt-0 md:ml-4">
+                    <button type="button" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Create New Event
+                    </button>
+                </div>
+            </div>
+            <div class="px-4 py-5 sm:p-6">
+                <!-- Content goes here -->
+                <!-- You might have a table of events, users, or statistics here. -->
+                <div class="text-gray-600">
+                    Welcome to the admin panel. Here you can manage events, users, and view site analytics.
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

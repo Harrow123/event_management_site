@@ -3,6 +3,7 @@ require_once "app/Config/database.php";
 require_once "app/Controllers/UserController.php";
 require_once "app/Controllers/HomeController.php";
 require_once "app/Controllers/AuthController.php";
+require_once "app/Controllers/AdminController.php";
 require_once "app/Controllers/EventController.php";
 require_once "app/Utils/Authentication.php";
 require_once "app/Controllers/CategoryController.php";
@@ -23,12 +24,22 @@ $uriParts = explode('/', $uri);
 $authController = new AuthController($twig, $pdo);
 $categoryController = new CategoryController($pdo);
 $eventModel = new Event($pdo);
+$adminController = new AdminController($twig, $pdo);
 
 // Debugging: Print the modified URI
 // echo "Modified URI: " . $uri . "<br>";
 
+$isAdmin = strpos($uri, 'admin') === 0;
+
+if ($isAdmin) {
+    include 'app/Views/layouts/admin-header.php';
+
+} else {
+    include 'app/Views/layouts/header.php';
+}
+
 // Include the header
-include 'app/Views/layouts/header.php';
+// include 'app/Views/layouts/header.php';
 
 switch ($uri) {
     case '':
@@ -90,6 +101,34 @@ switch ($uri) {
     case 'auth/logout':
         $controller = new Authentication();
         $controller->logout();
+        break;
+    // Admin routes
+    case 'admin':
+        $controller = new AdminController($twig, $pdo);
+        $controller->dashboard();
+        break;
+    case 'admin/login':
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $adminController->login($_POST['username'], $_POST['password']);
+        } else {
+            $adminController->showLoginPage();
+        }    
+        break;
+    case 'admin/events':
+        $controller = new AdminController($twig, $pdo);
+        $controller->listEvents();
+        break;
+    case 'admin/events/create':
+        $controller = new AdminController($twig, $pdo);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $controller->createEvent($_POST);
+        } else {
+            $controller->showCreateEventPage();
+        }
+            break;
+    case 'admin/users':
+        $controller = new AdminController($twig, $pdo);
+        $controller->listUsers();
         break;
     default:
         if (preg_match('/^events\/details\/(\d+)$/', $uri, $matches)) {
