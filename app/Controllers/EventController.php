@@ -59,10 +59,10 @@ class EventController {
         $targetFilePath = $uploadDirectory . $uniqueFileName;
     
         if (move_uploaded_file($file['tmp_name'], $targetFilePath)) {
-            return 'image/event/uploads/' . $uniqueFileName; // Return the relative path to the image
+            return 'assets/images/event/event_images/' . $uniqueFileName; // Return the relative path to the image
         } else {
             // Handle file upload error, e.g., return an error message or use a default image path
-            return 'image/event/uploads/default.png';
+            return 'default.png';
         }
     }
     

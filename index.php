@@ -66,7 +66,7 @@ switch ($uri) {
         }
         break;
     case 'events':
-        $controller = new EventController($twig, $pdo);
+        $controller = new EventController($twig, $pdo, $base_url);
         $controller -> listEvents($twig);
         break;
     case 'events/create':

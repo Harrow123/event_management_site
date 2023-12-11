@@ -10,7 +10,7 @@ class Event {
 
     public function getAllEvents() {
         // Fetch all events from the database
-        $stmt = $this->db->query("SELECT * FROM events");
+        $stmt = $this->db->query("SELECT * FROM events WHERE is_approved");
         return $stmt->fetchAll();
     }
 
