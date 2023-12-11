@@ -41,9 +41,14 @@ switch ($uri) {
         include 'app/Views/about.php';
         break;
     case 'users/profile':
-        $userId = $_SESSION['user_id']; // default to user ID 1
+        $userId = $_SESSION['user_id'];
         $controller = new UserController($twig,$pdo);
         $controller->getUserProfile($userId);
+        break;
+    case 'users/edit-profile':
+        $userId = $_SESSION['user_id'];
+        $controller = new UserController($twig,$pdo);
+        $controller->updateProfile();
         break;
     // More routes here
     case 'auth/login':

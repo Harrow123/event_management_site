@@ -67,5 +67,33 @@ class User {
     
         return $userEvents;
     }
+
+    public function updateUserProfile($userId, $userData) {
+        try {
+            // Prepare the SQL statement
+            $stmt = $this->pdo->prepare("UPDATE users SET name = :name, email = :email, gender = :gender, address = :address WHERE id = :userId");
+
+            // Bind parameters
+            $stmt->bindParam(':name', $userData['name']);
+            $stmt->bindParam(':email', $userData['email']);
+            $stmt->bindParam(':gender', $userData['gender']);
+            $stmt->bindParam(':address', $userData['address']);
+            $stmt->bindParam(':userId', $userId);
+
+            // Execute the statement
+            $stmt->execute();
+
+            // Check if any rows were updated
+            if ($stmt->rowCount() > 0) {
+                return true; // Update successful
+            } else {
+                return false; // No rows updated
+            }
+        } catch (PDOException $e) {
+            // Handle any errors (e.g., log them)
+            // Return false to indicate failure
+            return false;
+        }
+    }
     
 }
