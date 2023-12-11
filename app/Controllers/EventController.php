@@ -34,9 +34,13 @@ class EventController {
         echo $this->twig->render('events/list.html.twig', ['events' => $events, 'categories' => $categories]);
     }
 
-    public function viewEvent($twig, $eventId) {
+    public function viewEvent($eventId) {
         // Fetch event details from the Event model
         $event = $this->eventModel->getEventById($eventId);
+        // $events['image_url'] = 'public/assets/images/event_images/' . $event['image_path'];
+        $event['image_url'] = $this->baseUrl . 'public/assets/images/event_images/' . $event['image_path'];
+        // echo $events['image_url'];
+        // exit();
 
         // Render the detail.html.twig with event details
         echo $this->twig->render('events/details.html.twig', ['event' => $event]);
@@ -62,7 +66,7 @@ class EventController {
             return 'assets/images/event/event_images/' . $uniqueFileName; // Return the relative path to the image
         } else {
             // Handle file upload error, e.g., return an error message or use a default image path
-            return 'default.png';
+            return 'default.jpg';
         }
     }
     

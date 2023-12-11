@@ -18,6 +18,8 @@ $base_url = '/event_management_site/';
 // echo "Original URI: " . $_SERVER['REQUEST_URI'] . "<br>";
 
 $uri = str_replace($base_url, '', $_SERVER['REQUEST_URI']);
+$uriParts = explode('/', $uri);
+
 $authController = new AuthController($twig, $pdo);
 $categoryController = new CategoryController($pdo);
 $eventModel = new Event($pdo);
@@ -75,9 +77,9 @@ switch ($uri) {
         break;
     case 'events/details/{event_id}':
         // Handle event details page, pass event ID and fetch event details
-        $eventId = $_GET['event_id'] ?? 1; // Get the event ID from the query parameter
+        $eventId = $_GET['event_id'];
         $controller = new EventController($twig, $pdo);
-        $controller->eventDetails($eventId);
+        $controller->viewEvent($eventId);
         break;
     case 'users/events':
         // Handle user's events page, including ongoing, past, and attended events
@@ -90,8 +92,16 @@ switch ($uri) {
         $controller->logout();
         break;
     default:
-        // Page not found or default case
-        echo "<p>Page not found</p>";
+        if (preg_match('/^events\/details\/(\d+)$/', $uri, $matches)) {
+            // Dynamic route for event details
+            $eventId = $matches[1];
+            $controller = new EventController($twig, $pdo, $base_url);
+            $controller->viewEvent($eventId);
+        } else {
+            // No route matched, display page not found
+            echo "<p>Page not found</p>";
+        }
+        break;
 }
 
 // Include the footer
