@@ -45,7 +45,7 @@ class Event {
     }
     
 
-    public function createEvent($eventData, $categoryIds) {
+    public function createEvent($eventData, $categoryId) {
         // Extract event data from the $eventData array
         $title = $eventData['title'];
         $description = $eventData['description'];
@@ -53,7 +53,7 @@ class Event {
         $endDate = $eventData['end_date'];
         $venue = $eventData['venue'];
         $organizerId = $eventData['organizer_id'];
-        $image_path =$eventData['image_path '];
+        $image_path =$eventData['image_path'];
         $isFeatured = $eventData['is_featured'];
         
         // Validate event data (you can add more validation as needed)
@@ -67,7 +67,7 @@ class Event {
             $this->db->beginTransaction();
             
             // Insert event details into the Events table
-            $stmt = $this->db->prepare("INSERT INTO Events (title, description, start_date, end_date, venue, organizer_id, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $this->db->prepare("INSERT INTO Events (title, description, start_date, end_date, venue, organizer_id, image_path, is_featured) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([$title, $description, $startDate, $endDate, $venue, $organizerId, $image_path, $isFeatured]);
             
             // Check if the insertion was successful
@@ -79,21 +79,18 @@ class Event {
             
             // Get the event_id of the newly inserted event
             $eventId = $this->db->lastInsertId();
-            
-            // Map the event to categories in the Event_Category_Mapping table
-            foreach ($categoryIds as $categoryId) {
-                if (!$this->mapEventToCategory($eventId, $categoryId)) {
-                    // Rollback the transaction and return an error if mapping failed
-                    $this->db->rollBack();
-                    return ['success' => false, 'error' => 'Failed to map event to categories.'];
-                }
+
+            if (!$this->mapEventToCategory($eventId, $categoryId)) {
+                // Rollback the transaction and return an error if mapping failed
+                $this->db->rollBack();
+                return ['success' => false, 'error' => 'Failed to map event to categories.'];
             }
             
             // Commit the transaction as all operations were successful
             $this->db->commit();
             
             // Return success
-            return ['success' => true, 'message' => 'Event created successfully.'];
+            return ['success' => true, 'message' => 'Event created successfully.', 'eventId' => $eventId];
         } catch (PDOException $e) {
             // Handle any database errors (e.g., duplicate event title, constraint violations)
             // You can log the error or perform other error handling as needed

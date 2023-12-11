@@ -2,7 +2,7 @@
     <div class="form-container mx-auto mt-8 p-4">
         <h1 class="text-3xl font-semibold">Create Event</h1>
 
-        <form action="/events/create" method="POST" class="mt-4">
+        <form action="./create" method="POST" enctype="multipart/form-data" class="mt-4">
             <!-- Event details input fields -->
             <div class="mb-4">
                 <label for="title" class="block font-semibold">Event Title</label>
@@ -13,21 +13,24 @@
                 <label for="title" class="block font-semibold">Event Description</label>
                 <textarea id="description" name="description" class="form-input w-full" required></textarea>
             </div>
-            <div class="mb-4">
-                <label for="start_date" class="block font-semibold">Start Date</label>
+           <div class="mb-4">
+                <label for="start_date" class="block font-semibold">Start Date and Time</label>
                 <input type="date" name="start_date" id="start_date" class="form-input w-full" required>
+                <input type="time" name="start_time" id="start_time" class="form-input w-full" required>
             </div>
+
             <div class="mb-4">
-                <label for="end_date" class="block font-semibold">End Date</label>
+                <label for="end_date" class="block font-semibold">End Date and Time</label>
                 <input type="date" name="end_date" id="end_date" class="form-input w-full" required>
+                <input type="time" name="end_time" id="end_time" class="form-input w-full" required>
             </div>
             <div class="mb-4">
                 <label for="venue" class="block font-semibold">Venue</label>
                 <input type="text" name="venue" id="venue" class="form-input w-full" required>
             </div>
             <div class="mb-4">
-                <label for="category_ids" class="block font-semibold">Categories</label>
-                <select class="form-input w-full" id="category_ids" name="category_ids[]">
+                <label for="category_id" class="block font-semibold">Categories</label>
+                <select class="form-input w-full" id="category_id" name="category_id">
                     {% for category in categories %}
                         <option value="{{ category.category_id }}">{{ category.name }}</option>
                     {% endfor %}
@@ -38,10 +41,11 @@
                 <input type="file" name="event_image" id="event_image" class="form-input w-full">
             </div>
 
-            <div class="mb-4 flex flex-col">
-                <label class="block font-semibold" for="is_featured">Featured Event:</label>
-                <input class="form-input w-full" type="checkbox" id="is_featured" name="is_featured" value="1">
+           <div class="mb-4 flex flex-row items-center justify-start">
+                <label for="is_featured" class="font-semibold mr-4">Featured Event:</label>
+                <input type="checkbox" id="is_featured" name="is_featured" value="1" class="form-checkbox h-5 w-5">
             </div>
+
             
             <div class="mt-4">
                 <button type="submit" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600">Create Event</button>
