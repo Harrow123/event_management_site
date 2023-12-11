@@ -16,6 +16,12 @@ class EventController {
     public function listEvents($twig) {
         // Fetch events from the Event model
         $events = $this->eventModel->getAllEvents();
+        $image_url = "";
+
+        // Append the image URL to each event
+        foreach ($events as $key => $event) {
+            $events[$key]['image_url'] = 'public/assets/images/event_images/' . $event['image_path'];
+        }
 
         // Fetch all categories from the Category model
         $categories = $this->categoryModel->getAllCategories();

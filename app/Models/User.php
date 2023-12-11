@@ -89,37 +89,6 @@ class User {
         return $userEvents;
     }
 
-    // public function updateUserProfile($userId, $userData) {
-    //     try {
-    //         // Prepare the SQL statement
-    //         $stmt = $this->db->prepare("UPDATE users SET name = :name, username= :username, email = :email, gender = :gender, address = :address, profile_picture = :profile_image WHERE user_id = :userId");
-
-    //         // Bind parameters
-    //         $stmt->bindParam(':name', $userData['name']);
-    //         $stmt->bindParam(':email', $userData['email']);
-    //         $stmt->bindParam(':gender', $userData['gender']);
-    //         $stmt->bindParam(':username', $userData['username']);
-    //         $stmt->bindParam(':profile_image', $userData['profile_image']);
-    //         $stmt->bindParam(':address', $userData['address']);
-    //         $stmt->bindParam(':userId', $userId);
-
-    //         // Execute the statement
-    //         $stmt->execute();
-
-    //         // Check if any rows were updated
-    //         if ($stmt->rowCount() > 0) {
-    //             return true; // Update successful
-    //         } else {
-    //             return false; // No rows updated
-    //         }
-    //     } catch (PDOException $e) {
-    //         // Handle any errors (e.g., log them)
-    //         // Return false to indicate failure
-    //         error_log("Database error: " . $e->getMessage()); // Log the error
-    //         return false;
-    //     }
-    // }
-
     public function updateUserProfile($userId, $userData) {
         try {
             // Start building the SQL statement
