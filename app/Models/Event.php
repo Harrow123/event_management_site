@@ -75,9 +75,18 @@ class Event {
         $startDate = $eventData['start_date'];
         $endDate = $eventData['end_date'];
         $venue = $eventData['venue'];
-        $organizerId = $eventData['organizer_id'];
+        // $organizerId = $eventData['organizer_id'];
         $image_path =$eventData['image_path'];
         $isFeatured = $eventData['is_featured'];
+
+        if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']) {
+            $organizerId = $_SESSION['admin_id'] ?? null; // Use 'admin_id' if available
+            $isApproved = 1; // Set 'is_approved' to 1 for admin users
+        
+        } else {
+            $organizerId = $_SESSION['user_id'] ?? null; // Fallback to 'user_id' for regular users
+            $isApproved = 0; // Set 'is_approved' to 0 for regular users
+        }
         
         // Validate event data (you can add more validation as needed)
         if (empty($title) || empty($description) || empty($startDate) || empty($endDate) || empty($venue) || empty($organizerId)) {
@@ -90,8 +99,8 @@ class Event {
             $this->db->beginTransaction();
             
             // Insert event details into the Events table
-            $stmt = $this->db->prepare("INSERT INTO Events (title, description, start_date, end_date, venue, organizer_id, image_path, is_featured) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$title, $description, $startDate, $endDate, $venue, $organizerId, $image_path, $isFeatured]);
+            $stmt = $this->db->prepare("INSERT INTO Events (title, description, start_date, end_date, venue, organizer_id, image_path, is_featured, is_approved) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$title, $description, $startDate, $endDate, $venue, $organizerId, $image_path, $isFeatured, $isApproved]);
             
             // Check if the insertion was successful
             if ($stmt->rowCount() === 0) {

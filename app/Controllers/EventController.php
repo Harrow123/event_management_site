@@ -88,6 +88,9 @@ class EventController {
             $categoryID = $_POST['category_id'] ?? null;
             $image = isset($_FILES['event_image']) ? $_FILES['event_image'] : null;
             $isFeatured = isset($_POST['is_featured']) ? 1 : 0;
+
+            // Check if the user is an admin
+            $isAdmin = $_SESSION['is_admin'] ?? false;
     
             // Validate and sanitize the data as needed
             // if (!empty($_FILES['event_image']['name'])) {
@@ -118,7 +121,7 @@ class EventController {
                 'end_date' => $endDateTime,
                 'venue' => $venue,
                 'organizer_id' => $_SESSION['user_id'],
-                'is_approved' => 0,
+                'is_approved' => $isAdmin ? 1 : 0,
                 // 'image_path' => $image,
                 'image_path' => $imagePath,
                 'is_featured' => $isFeatured,

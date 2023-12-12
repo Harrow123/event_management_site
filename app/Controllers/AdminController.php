@@ -18,6 +18,8 @@ class AdminController {
         $this->adminModel = new Admin($pdo);
         require_once __DIR__ . '/../Models/Category.php';
         $this->categoryModel = new Category($pdo);
+        require_once __DIR__ . '/../Utils/ImageUploader.php';
+        $this->imageUploader = new ImageUploader();
     }
 
     public function showLoginPage($error = null) {
@@ -280,18 +282,68 @@ class AdminController {
 
     // Method to create an event
     public function createEvent($eventData) {
-        // Admin-created events are automatically approved
+        $errors = [];
+        // echo $eventData;
+        // exit();
+
+        // Validate required fields
+        if (empty($eventData['title'])) {
+            $errors[] = 'Title is required.';
+        }
+        if (empty($eventData['description'])) {
+            $errors[] = 'Description is required.';
+        }
+
+        // Check for image upload errors
+         // Handle image upload if a file is provided
+         if (isset($_FILES['event_image']) && $_FILES['event_image']['error'] === UPLOAD_ERR_OK) {
+            $imagePath = $this->imageUploader->uploadImage($_FILES['event_image'], 'event_images');
+            if ($imagePath) {
+                $eventData['image_path'] = $imagePath;
+            } else {
+                $errors[] = 'Image upload failed.';
+            }
+        } else {
+            $eventData['image_path'] = 'default.png'; // Default image or handle as per your application's logic
+        }
+
+
+        $eventData['image_path'] = $imagePath;
+        $eventData['is_featured'] = $eventData['is_featured'] ?? 0;
         $eventData['is_approved'] = 1;
-        $this->eventModel->createEvent($eventData);
-        // Redirect back to the event list or show confirmation
-        header('Location: /admin/events');
-        exit();
+
+        if (empty($errors)) {
+            $categoryId = $eventData['category_id'];
+            $result = $this->eventModel->createEvent($eventData, $categoryId);
+
+            if ($result['success']) {
+                header('Location: /event_management_site/admin/events');
+                exit();
+            }else {
+                // Handle the error during event creation
+                $errors[] = "Event creation failed.";
+            }
+        }
+
+        // // Admin-created events are automatically approved
+        // $eventData['is_approved'] = 1;
+        // $categoryId = $eventData['category_id'];
+        // $this->eventModel->createEvent($eventData, $categoryId);
+        // // Redirect back to the event list or show confirmation
+        // header('Location: /event_management_site/admin/events');
+        // exit();
+
+        // If there are errors, pass them to the view
+        $categories = $this->categoryModel->getAllCategories();
+        echo $this->twig->render('admin/create-event.html.twig', ['errors' => $errors, 'categories' => $categories]);
     }
 
     public function showCreateEventPage() {
         // Ensure the user is authorized and is an admin
         if ($this->userModel->isAdmin($_SESSION['admin_id'])) {
-            echo $this->twig->render('admin/create-event.html.twig');
+            // Fetch all categories from the Category model
+            $categories = $this->categoryModel->getAllCategories();
+            echo $this->twig->render('admin/create-event.html.twig', ['categories' => $categories,]);
         } else {
             // Handle unauthorized access, maybe redirect to login or give an error message
             header('Location: /event_management_site/admin/login');
