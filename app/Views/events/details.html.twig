@@ -19,12 +19,19 @@
 
             <!-- Attend/ Edit Button -->
             {% if session.user_id == event.organizer_id %}
-                <a href="/event_management_site/events/edit/{{ event.id }}" class="btn btn-primary">Edit Event</a>
+                <a href="/event_management_site/events/edit/{{ event.event_id }}" class="btn btn-primary">Edit Event</a>
             {% else %}
-                <form action="/event_management_site/events/attend/{{ event.id }}" method="post">
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-2" type="submit" class="btn btn-success">Attend Event</button>
-                </form>
+                {% if isAttending %}
+                    <form action="/event_management_site/events/cancel-attendance/{{ event.event_id }}" method="post">
+                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded my-2" type="submit">Cancel Attendance</button>
+                    </form>
+                {% else %}
+                    <form action="/event_management_site/events/attend/{{ event.event_id }}" method="post">
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-2" type="submit">Attend Event</button>
+                    </form>
+                {% endif %}
             {% endif %}
+
 
             <!-- Attendees List -->
             <div class="attendees mt-6">

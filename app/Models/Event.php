@@ -14,6 +14,37 @@ class Event {
         return $stmt->fetchAll();
     }
 
+    public function isUserAttending($eventId, $userId) {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM Bookings WHERE event_id = :eventId AND user_id = :userId");
+        $stmt->bindParam(':eventId', $eventId, PDO::PARAM_INT);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // If the count is greater than 0, the user is attending the event
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function attendEvent($eventId, $userId) {
+        try {
+            $stmt = $this->db->prepare("INSERT INTO Bookings (user_id, event_id, status) VALUES (:userId, :eventId, 'Attending')");
+            $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':eventId', $eventId, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            // Handle exception (e.g., booking already exists)
+            // You can log this error and/or return false to indicate failure
+            return false;
+        }
+    }
+
+    public function cancelEventAttendance($eventId, $userId) {
+        $stmt = $this->db->prepare("DELETE FROM Bookings WHERE event_id = :eventId AND user_id = :userId");
+        $stmt->bindParam(':eventId', $eventId, PDO::PARAM_INT);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
     public function getTotalEventsCount() {
         $sql = "SELECT COUNT(*) FROM events";
         $stmt = $this->db->query($sql);
@@ -52,6 +83,24 @@ class Event {
         $stmt = $this->db->prepare("SELECT * FROM Events WHERE event_id = ?");
         $stmt->execute([$eventId]);
         return $stmt->fetch();
+    }
+
+    public function isAttending($eventId, $userId) {
+        if ($userId === null) {
+            // If no user ID is provided, return false
+            return false;
+        }
+
+        // Prepare the SQL query to check if the user is attending the event
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM Bookings WHERE event_id = :eventId AND user_id = :userId");
+        $stmt->bindParam(':eventId', $eventId, PDO::PARAM_INT);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+
+        // Execute the query
+        $stmt->execute();
+
+        // Fetch the count and return true if the count is greater than 0
+        return $stmt->fetchColumn() > 0;
     }
 
     public function getEventImage($eventId) {

@@ -47,6 +47,8 @@ class EventController {
     // }
 
     public function viewEvent($eventId) {
+        $isAttending = $this->eventModel->isAttending($eventId, $_SESSION['user_id'] ?? null);
+
         // Fetch event details
         $event = $this->eventModel->getEventById($eventId); // Fetch event from the database based on $eventId
 
@@ -57,14 +59,80 @@ class EventController {
     
         // Fetch attendees
         $attendees = []; // Fetch attendees from the database
+
+        if ($isOrganizer) {
+            // The current user is the organizer, show attendees
+            $attendees = $this->eventModel->getAttendees($eventId, );
+        }
     
         // Render the view with event details and attendees
         echo $this->twig->render('events/details.html.twig', [
             'event' => $event,
             'isOrganizer' => $isOrganizer,
-            'attendees' => $attendees
+            'attendees' => $attendees,
+            'isAttending' => $isAttending
         ]);
-    }    
+    }   
+    
+    public function attendEvent($eventId) {
+        // Check if the user is logged in
+        $userId = $_SESSION['user_id'] ?? null;
+        if (!$userId) {
+            // User is not logged in, redirect to login page or show an error message
+            // Redirect to login page example
+            header('Location: login');
+            exit();
+        }
+    
+        // Fetch event details to check if the event exists and if the user is the organizer
+        $event = $this->eventModel->getEventById($eventId);
+        if (!$event) {
+            // Event does not exist, handle the error
+            // Redirect to error page or show an error message
+            exit('Event does not exist.');
+        }
+    
+        if ($event['organizer_id'] == $userId) {
+            // User is the organizer of the event, they cannot attend it
+            // Redirect or show an error message
+            exit('Organizers cannot attend their own event.');
+        }
+    
+        // Check if the user is already attending the event
+        if ($this->eventModel->isUserAttending($eventId, $userId)) {
+            // User is already attending the event
+            // Redirect or show an error message
+            exit('You are already attending this event.');
+        }
+    
+        // Insert a record into the Bookings table
+        $success = $this->eventModel->attendEvent($eventId, $userId);
+        if ($success) {
+            // Redirect to the event details page with a success message
+            header('Location: /event_management_site/events/details/' . $eventId);
+        } else {
+            // Handle the case where the booking failed
+            exit('Failed to attend the event. Please try again.');
+        }
+    }   
+    
+    public function cancelAttendance($eventId) {
+        $userId = $_SESSION['user_id'] ?? null;
+        if (!$userId) {
+            // Redirect to login if user is not logged in
+            header('Location: /login');
+            exit();
+        }
+
+        if ($this->eventModel->cancelEventAttendance($eventId, $userId)) {
+            // Redirect to the event details page with a success message
+            header("Location: /event_management_site/events/details/{$eventId}");
+        } else {
+            // Handle the error, e.g., attendance record not found
+            // Redirect to an error page or display an error message
+            exit('Error canceling attendance.');
+        }
+    }
 
     private function uploadImage($file) {
         // Define the upload directory

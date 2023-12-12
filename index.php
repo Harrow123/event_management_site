@@ -92,7 +92,7 @@ switch ($uri) {
     //     $controller = new EventController($twig, $pdo);
     //     $controller->viewEvent($eventId);
     //     break;
-    case preg_match('/^events\/details\/(\d+)$/', $uri, $matches) ? true : false:
+    case preg_match('/^event_management_site\/events\/details\/(\d+)$/', $uri, $matches) ? true : false:
         $eventId = $matches[1];
         $controller = new EventController($twig, $pdo, $base_url);
         $controller->viewEvent($eventId);
@@ -100,8 +100,13 @@ switch ($uri) {
     
     case preg_match('/^events\/attend\/(\d+)$/', $uri, $matches) ? true : false:
         $eventId = $matches[1];
-        $controller = new EventController($twig, $pdo);
+        $controller = new EventController($twig, $pdo, $base_url);
         $controller->attendEvent($eventId);
+        break;
+    case preg_match('/^events\/cancel-attendance\/(\d+)$/', $uri, $matches) ? true : false:
+        $eventId = $matches[1];
+        $controller = new EventController($twig, $pdo, $base_url);
+        $controller->cancelAttendance($eventId);
         break;
     case 'users/events':
         // Handle user's events page, including ongoing, past, and attended events
