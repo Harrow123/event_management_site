@@ -86,11 +86,22 @@ switch ($uri) {
         $controller = new EventController($twig, $pdo, $base_url);
         $controller->createEvent(); // Create a new event
         break;
-    case 'events/details/{event_id}':
-        // Handle event details page, pass event ID and fetch event details
-        $eventId = $_GET['event_id'];
-        $controller = new EventController($twig, $pdo);
+    // case 'events/details/{event_id}':
+    //     // Handle event details page, pass event ID and fetch event details
+    //     $eventId = $_GET['event_id'];
+    //     $controller = new EventController($twig, $pdo);
+    //     $controller->viewEvent($eventId);
+    //     break;
+    case preg_match('/^events\/details\/(\d+)$/', $uri, $matches) ? true : false:
+        $eventId = $matches[1];
+        $controller = new EventController($twig, $pdo, $base_url);
         $controller->viewEvent($eventId);
+        break;
+    
+    case preg_match('/^events\/attend\/(\d+)$/', $uri, $matches) ? true : false:
+        $eventId = $matches[1];
+        $controller = new EventController($twig, $pdo);
+        $controller->attendEvent($eventId);
         break;
     case 'users/events':
         // Handle user's events page, including ongoing, past, and attended events

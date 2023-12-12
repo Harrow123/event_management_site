@@ -9,7 +9,7 @@
                     <h2 class="text-xl font-semibold">{{ event.title }}</h2>
                     <p class="text-gray-600 text-sm">{{ event.date }}</p>
                     <p class="text-gray-700 mt-2">{{ event.description }}</p>
-                    <a href="/events/details/{{ event.id }}" class="text-blue-500 hover:underline mt-4 inline-block">Details</a>
+                    <a href="events/details/{{ event.event_id }}" class="text-blue-500 hover:underline mt-4 inline-block">Details</a>
                 </div>
             {% endfor %}
         </div>

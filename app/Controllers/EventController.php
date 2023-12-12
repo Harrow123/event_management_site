@@ -34,17 +34,37 @@ class EventController {
         echo $this->twig->render('events/list.html.twig', ['events' => $events, 'categories' => $categories]);
     }
 
-    public function viewEvent($eventId) {
-        // Fetch event details from the Event model
-        $event = $this->eventModel->getEventById($eventId);
-        // $events['image_url'] = 'public/assets/images/event_images/' . $event['image_path'];
-        $event['image_url'] = $this->baseUrl . 'public/assets/images/event_images/' . $event['image_path'];
-        // echo $events['image_url'];
-        // exit();
+    // public function viewEvent($eventId) {
+    //     // Fetch event details from the Event model
+    //     $event = $this->eventModel->getEventById($eventId);
+    //     // $events['image_url'] = 'public/assets/images/event_images/' . $event['image_path'];
+    //     $event['image_url'] = $this->baseUrl . 'public/assets/images/event_images/' . $event['image_path'];
+    //     // echo $events['image_url'];
+    //     // exit();
 
-        // Render the detail.html.twig with event details
-        echo $this->twig->render('events/details.html.twig', ['event' => $event]);
-    }
+    //     // Render the detail.html.twig with event details
+    //     echo $this->twig->render('events/details.html.twig', ['event' => $event]);
+    // }
+
+    public function viewEvent($eventId) {
+        // Fetch event details
+        $event = $this->eventModel->getEventById($eventId); // Fetch event from the database based on $eventId
+
+        $event['image_url'] = 'http://localhost/event_management_site/public/assets/images/event_images/' . $event['image_path'];
+    
+        // Check if the current user is the organizer
+        $isOrganizer = ($_SESSION['user_id'] ?? null) == $event['organizer_id'];
+    
+        // Fetch attendees
+        $attendees = []; // Fetch attendees from the database
+    
+        // Render the view with event details and attendees
+        echo $this->twig->render('events/details.html.twig', [
+            'event' => $event,
+            'isOrganizer' => $isOrganizer,
+            'attendees' => $attendees
+        ]);
+    }    
 
     private function uploadImage($file) {
         // Define the upload directory

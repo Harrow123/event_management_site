@@ -1,6 +1,3 @@
-
-
-
 {% block content %}
     <div class="container mx-auto p-6">
         <div class="bg-white rounded-lg shadow-lg p-6">
@@ -18,6 +15,25 @@
                 {% if event.is_featured %}
                     <span class="inline-block bg-blue-200 text-blue-800 text-xs px-2 rounded-full uppercase font-semibold tracking-wide mt-4">Featured</span>
                 {% endif %}
+            </div>
+
+            <!-- Attend/ Edit Button -->
+            {% if session.user_id == event.organizer_id %}
+                <a href="/event_management_site/events/edit/{{ event.id }}" class="btn btn-primary">Edit Event</a>
+            {% else %}
+                <form action="/event_management_site/events/attend/{{ event.id }}" method="post">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-2" type="submit" class="btn btn-success">Attend Event</button>
+                </form>
+            {% endif %}
+
+            <!-- Attendees List -->
+            <div class="attendees mt-6">
+                <h3 class="text-lg font-semibold">Attendees:</h3>
+                <ul>
+                    {% for attendee in attendees %}
+                        <li>{{ attendee.name }}</li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </div>
