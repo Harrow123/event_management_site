@@ -13,3 +13,7 @@
 .error-text {
   @apply text-red-600 font-semibold;
 }
+
+.active {
+  @apply bg-white text-green-500;
+}

@@ -11,12 +11,13 @@
         <nav class="container mx-auto flex items-center justify-between p-4">
             <!-- Logo and brand name -->
             <a href="<?php echo $base_url; ?>" class="text-2xl font-bold">Evently</a>
+            <?php $current_page = $_SERVER['REQUEST_URI']; ?>
             <!-- Navigation Links -->
             <div class="hidden md:flex items-center space-x-4">
-                <a href="<?php echo $base_url; ?>" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Home</a>
-                <a href="<?php echo $base_url; ?>about" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">About</a>
-                <a href="<?php echo $base_url; ?>contact" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Contact</a>
-                <a href="<?php echo $base_url; ?>events" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Find Events</a>
+                <a href="<?php echo $base_url; ?>" class="<?php echo ($current_page == '/' ? 'active' : ''); ?> hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Home</a>
+                <a href="<?php echo $base_url; ?>about" class="<?php echo ($current_page == '/' ? 'active' : ''); ?> hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">About</a>
+                <a href="<?php echo $base_url; ?>contact" class="<?php echo ($current_page == '/' ? 'active' : ''); ?> hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Contact</a>
+                <a href="<?php echo $base_url; ?>events" class="<?php echo ($current_page == '/' ? 'active' : ''); ?> hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Find Events</a>
                 
                 <!-- Conditional authentication links -->
                 <?php if ($authentication->isLoggedIn()) : ?>
