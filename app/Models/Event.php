@@ -79,6 +79,9 @@ class Event {
         $image_path =$eventData['image_path'];
         $isFeatured = $eventData['is_featured'];
 
+        // echo $image_path;
+        // exit();
+
         if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']) {
             $organizerId = $_SESSION['admin_id'] ?? null; // Use 'admin_id' if available
             $isApproved = 1; // Set 'is_approved' to 1 for admin users

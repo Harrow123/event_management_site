@@ -85,11 +85,15 @@
         </div>
 
         <!-- Featured Event Checkbox -->
-        <div class="mb-4">
+        {# <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="is_featured">
                 Featured Event
             </label>
             <input type="checkbox" id="is_featured" name="is_featured" value="1" class="shadow appearance-none border rounded h-5 w-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div> #}
+        <div class="mb-4 flex flex-row items-center justify-start">
+            <label for="is_featured" class="font-semibold mr-4">Featured Event:</label>
+            <input type="checkbox" id="is_featured" name="is_featured" value="1" class="form-checkbox h-5 w-5">
         </div>
 
         <!-- Submit Button -->

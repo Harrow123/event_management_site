@@ -294,21 +294,38 @@ class AdminController {
             $errors[] = 'Description is required.';
         }
 
-        // Check for image upload errors
-         // Handle image upload if a file is provided
-         if (isset($_FILES['event_image']) && $_FILES['event_image']['error'] === UPLOAD_ERR_OK) {
+        // // Check for image upload errors
+        //  // Handle image upload if a file is provided
+        //  if (isset($_FILES['event_image']) && $_FILES['event_image']['error'] === UPLOAD_ERR_OK) {
+        //     $imagePath = $this->imageUploader->uploadImage($_FILES['event_image'], 'event_images');
+        //     if ($imagePath) {
+        //         $eventData['image_path'] = $imagePath;
+        //     } else {
+        //         $errors[] = 'Image upload failed.';
+        //     }
+        // } else {
+        //     $eventData['image_path'] = 'default.png'; // Default image or handle as per your application's logic
+        // }
+
+        // Handle image upload if a file is provided
+        if (isset($_FILES['event_image']) && $_FILES['event_image']['error'] === UPLOAD_ERR_OK) {
             $imagePath = $this->imageUploader->uploadImage($_FILES['event_image'], 'event_images');
             if ($imagePath) {
                 $eventData['image_path'] = $imagePath;
             } else {
-                $errors[] = 'Image upload failed.';
+                // If the image upload fails, use the default image
+                $eventData['image_path'] = 'default.jpg';
+                $errors[] = 'Image upload failed, default image will be used.';
             }
         } else {
-            $eventData['image_path'] = 'default.png'; // Default image or handle as per your application's logic
+            // If no file is selected, use the default image
+            $eventData['image_path'] = 'default.jpg';
         }
 
+        // echo $eventData['image_path'];
+        // exit();
 
-        $eventData['image_path'] = $imagePath;
+        // $eventData['image_path'] = $imagePath;
         $eventData['is_featured'] = $eventData['is_featured'] ?? 0;
         $eventData['is_approved'] = 1;
 
