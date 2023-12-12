@@ -24,6 +24,99 @@ class AdminController {
         echo $this->twig->render('admin/admin_login.html.twig', ['error' => $error]);
     }
 
+    private function uploadProfilePicture($file) {
+        $uploadDirectory = 'public/uploads/';
+        $defaultPicture = 'default.png';
+    
+        if (isset($file['error']) && $file['error'] === UPLOAD_ERR_OK) {
+            $tmpName = $file['tmp_name'];
+            $fileName = $file['name'];
+    
+            // Generate a unique filename using a combination of UID and the original filename
+            $uniqueUid = uniqid();
+            $uniqueFileName = $uniqueUid . '_' . $fileName;
+    
+            // Move the uploaded file to the upload directory
+            move_uploaded_file($tmpName, $uploadDirectory . $uniqueFileName);
+    
+            return $uniqueFileName;
+        }
+    
+        // If no file is uploaded or an error occurred, use the default picture
+        return $defaultPicture;
+    }
+
+    public function createUser($userData) {
+        // Perform server-side validation
+        $errors = $this->validateUserData($userData);
+        if (!empty($errors)) {
+            // Re-render the form with error messages
+            echo $this->twig->render('admin/create-user.html.twig', ['userData' => $userData, 'errors' => $errors]);
+            return;
+        }
+
+        // Check if passwords match
+        if ($userData['password'] !== $userData['confirm_password']) {
+            $errors[] = 'Passwords do not match.';
+            echo $this->twig->render('admin/create-user.html.twig', ['userData' => $userData, 'errors' => $errors]);
+            return;
+        }
+
+        // Hash the password
+        $hashedPassword = password_hash($userData['password'], PASSWORD_DEFAULT);
+        $userData['password'] = $hashedPassword;
+
+        // Process file upload if necessary
+        // ... (handle profile picture upload)
+
+        // Call the model method to insert the user into the database
+        $result = $this->userModel->createUser($userData);
+        
+        if ($result) {
+            // Redirect to user list or display success message
+            header('Location: /event_management_site/admin/users');
+            exit();
+        } else {
+            // Handle the error case
+            $errors[] = 'An error occurred while creating the user.';
+            echo $this->twig->render('admin/create-user.html.twig', ['userData' => $userData, 'errors' => $errors]);
+        }
+    }
+
+    private function validateUserData($userData) {
+        $errors = [];
+    
+        // Check for required fields
+        $requiredFields = ['name', 'username', 'email', 'gender', 'address'];
+        foreach ($requiredFields as $field) {
+            if (empty($userData[$field])) {
+                $errors[] = "The {$field} field is required.";
+            }
+        }
+    
+        // Validate email format
+        if (!empty($userData['email']) && !filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
+            $errors[] = "The email address is not a valid format.";
+        }
+    
+        // Check if username is already taken
+        $existingUser = $this->userModel->findByUsername($userData['username']);
+        if ($existingUser) {
+            $errors[] = "The username is already taken.";
+        }
+    
+        // Validate gender selection
+        $validGenders = ['Male', 'Female', 'Other'];
+        if (!in_array($userData['gender'], $validGenders)) {
+            $errors[] = "Please select a valid gender.";
+        }
+    
+        // Additional validations can be added here
+    
+        return $errors;
+    }
+    
+
     public function login($username, $password) {
         $username = trim($username);
         $password = trim($password);
@@ -110,8 +203,9 @@ class AdminController {
 
     }
 
-    public function createUser($userData) {
-        // Process and create a new user
+    public function createUserPage() {
+        // Render the create user page
+        echo $this->twig->render('admin/create-user.html.twig');
     }
 
     public function updateUser($userId, $userData) {

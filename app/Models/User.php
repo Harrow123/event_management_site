@@ -15,6 +15,14 @@ class User {
     
         return $stmt->fetchColumn() > 0;
     }
+
+    public function findByUsername($username) {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username");
+        $stmt->bindParam(':username', $username);
+        $stmt->execute();
+    
+        return $stmt->fetch();
+    }
     
     // Method to check if a username exists in the database
     public function usernameExists($username, $userId) {
@@ -208,6 +216,25 @@ class User {
         // Logic to fetch the total number of users
         $stmt = $this->db->query("SELECT COUNT(*) FROM Users");
         return $stmt->fetchColumn(); // Fetch the count from the first column
+    }
+
+    public function createUser($userData) {
+        // SQL query to insert a new user
+        $sql = "INSERT INTO users (username, name, email, password, address, gender, is_admin) VALUES (:username, :name, :email, :password, :address, :gender, is_admin=0)";
+
+        // Prepare the SQL statement
+        $stmt = $this->db->prepare($sql);
+
+        // Bind parameters from $userData to the SQL query
+        $stmt->bindParam(':username', $userData['username']);
+        $stmt->bindParam(':name', $userData['name']);
+        $stmt->bindParam(':email', $userData['email']);
+        $stmt->bindParam(':password', $userData['password']); // Make sure this is hashed
+        $stmt->bindParam(':address', $userData['address']);
+        $stmt->bindParam(':gender', $userData['gender']);
+
+        // Execute the statement and return the result
+        return $stmt->execute();
     }
     
 }

@@ -102,6 +102,7 @@ switch ($uri) {
         $controller = new Authentication();
         $controller->logout();
         break;
+
     // Admin routes
     case 'admin':
     case 'admin/':
@@ -145,16 +146,25 @@ switch ($uri) {
         $controller = new AdminController($twig, $pdo);
         $controller->listUsers();
         break;
-        case 'admin/users/edit':
-            // Assuming you have a user ID passed as a GET parameter
-            $userId = $_GET['user_id'] ?? null;
-            if ($userId) {
-                $controller = new AdminController($twig, $pdo);
-                if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                    $controller->editUser($userId, $_POST);
-                } else {
-                    $controller->editUserPage($userId);
-                }
+    case 'admin/users/edit':
+        // Assuming you have a user ID passed as a GET parameter
+        $userId = $_GET['user_id'] ?? null;
+        if ($userId) {
+            $controller = new AdminController($twig, $pdo);
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                $controller->editUser($userId, $_POST);
+            } else {
+                $controller->editUserPage($userId);
+            }
+        }
+        break;
+        case 'admin/users/create':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Handle POST request for creating a new user
+                $adminController->createUser($_POST);
+            } else {
+                // Display the create user page
+                $adminController->createUserPage();
             }
             break;
     default:
