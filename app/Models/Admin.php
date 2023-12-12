@@ -11,11 +11,12 @@ class Admin {
         $stmt->execute([$username]);
         $user = $stmt->fetch();
 
-        echo $password;
-        exit();
+        // echo $password;
+        // exit();
         if ($user && password_verify($password, $user['password'])) {
             // Set session or token as per your session handling logic
             $_SESSION['admin_id'] = $user['user_id'];
+            $_SESSION['is_admin'] = true;
             return true;
         }
         return false;

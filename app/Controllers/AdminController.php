@@ -115,6 +115,12 @@ class AdminController {
     
         return $errors;
     }
+
+    public function hashPassword(){
+        $newPassword = "@dministrat0r";
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        echo $hashedPassword;
+    }
     
 
     public function login($username, $password) {
@@ -284,7 +290,7 @@ class AdminController {
 
     public function showCreateEventPage() {
         // Ensure the user is authorized and is an admin
-        if ($this->userModel->isAdmin($_SESSION['user_id'])) {
+        if ($this->userModel->isAdmin($_SESSION['admin_id'])) {
             echo $this->twig->render('admin/create-event.html.twig');
         } else {
             // Handle unauthorized access, maybe redirect to login or give an error message

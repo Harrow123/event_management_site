@@ -109,12 +109,20 @@ switch ($uri) {
         $controller = new AdminController($twig, $pdo);
         $controller->dashboard();
         break;
+    case 'admin/hash-password':
+        $controller = new AdminController($twig, $pdo);
+        $controller->hashPassword();
+        break;
     case 'admin/login':
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $adminController->login($_POST['username'], $_POST['password']);
         } else {
             $adminController->showLoginPage();
         }    
+        break;
+    case 'admin/logout':
+        $controller = new Authentication();
+        $controller->logout();
         break;
     // case 'admin/events':
     //     $controller = new AdminController($twig, $pdo);
@@ -135,7 +143,7 @@ switch ($uri) {
         } else {
             $controller->showCreateEventPage();
         }
-            break;
+        break;
     case 'admin/events/approve':
         $eventId = $_GET['event_id'] ?? null;
         if ($eventId) {

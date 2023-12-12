@@ -38,7 +38,7 @@ class User {
     //write a method to get if the user is a admin based on the session
     public function isAdmin() {
         $stmt = $this->db->prepare("SELECT is_admin FROM users WHERE user_id = ?");
-        $stmt->execute([$_SESSION['user_id']]);
+        $stmt->execute([$_SESSION['admin_id']]);
         $isAdmin = $stmt->fetchColumn();
     
         return $isAdmin;
