@@ -203,10 +203,6 @@ class AdminController {
         // Process and update an event
     }
 
-    public function deleteEvent($eventId) {
-        // Delete an event
-    }
-
     public function listUsers() {
         // Fetch and render the list of users
         $users = $this->userModel->getAllUsers();
@@ -223,17 +219,25 @@ class AdminController {
         // Process and update a user
     }
 
-    public function deleteUser($userId) {
-        // Delete a user
-    }
-
     // Method to approve an unapproved event
-    public function approveEvent($eventId) {
+    public function approveEvent($eventId, $currentPage) {
         $this->eventModel->approveEventById($eventId);
-        // Redirect back to the event list or show confirmation
-        header('Location: /admin/events');
+        header('Location: /event_management_site/admin/events?page=' . $currentPage);
         exit();
     }
+
+    // Method to disapprove an approved event
+    public function disapproveEvent($eventId, $currentPage) {
+        $this->eventModel->setEventApprovalStatus($eventId, 0);
+        header('Location: /event_management_site/admin/events?page=' . $currentPage);
+        exit();
+    }
+
+    public function deleteEvent($eventId, $currentPage) {
+        $this->eventModel->deleteEventById($eventId);
+        header('Location: /event_management_site/admin/events?page=' . $currentPage);
+        exit();
+    }    
 
     // Method to show the edit event page
     public function editEventPage($eventId) {
@@ -247,7 +251,7 @@ class AdminController {
     public function editEvent($eventId, $eventData) {
         $this->eventModel->updateEventById($eventId, $eventData);
         // Redirect back to the event list or show confirmation
-        header('Location: /admin/events');
+        header('Location: admin/events');
         exit();
     }
 

@@ -116,11 +116,11 @@ switch ($uri) {
             $adminController->showLoginPage();
         }    
         break;
-    case 'admin/events':
-        $controller = new AdminController($twig, $pdo);
-        $currentPage = $_GET['page'] ?? 1;
-        $controller->listEvents($currentPage);
-        break;
+    // case 'admin/events':
+    //     $controller = new AdminController($twig, $pdo);
+    //     $currentPage = $_GET['page'] ?? 1;
+    //     $controller->listEvents($currentPage);
+    //     break;
     // case 'admin/events/details/{event_id}':
     //     $controller = new AdminController($twig, $pdo);
     //     $eventId = $_GET['event_id'] ?? null;
@@ -169,7 +169,14 @@ switch ($uri) {
             }
             break;
     default:
-        if (preg_match('/^events\/details\/(\d+)$/', $uri, $matches)) {
+        // Handle dynamic routes for events, categories, and users
+        if (preg_match('#^admin/events$#', parse_url($uri, PHP_URL_PATH))) {
+            $controller = new AdminController($twig, $pdo);
+            // Use $_GET to retrieve the 'page' query parameter
+            $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $controller->listEvents($currentPage);
+        }
+        else if (preg_match('/^events\/details\/(\d+)$/', $uri, $matches)) {
             // Dynamic route for event details
             $eventId = $matches[1];
             $controller = new EventController($twig, $pdo, $base_url);
@@ -192,6 +199,24 @@ switch ($uri) {
                 $controller->editEventPage($eventId);
             }
         }
+        else if (preg_match('#^admin/events/approve/(\d+)$#', parse_url($uri, PHP_URL_PATH), $matches)) {
+            $eventId = $matches[1];
+            $currentPage = $_GET['page'] ?? 1; // Get the current page from the query string
+            $controller = new AdminController($twig, $pdo);
+            $controller->approveEvent($eventId, $currentPage);
+        } 
+        else if (preg_match('#^admin/events/disapprove/(\d+)$#', parse_url($uri, PHP_URL_PATH), $matches)) {
+            $eventId = $matches[1];
+            $currentPage = $_GET['page'] ?? 1; // Get the current page from the query string
+            $controller = new AdminController($twig, $pdo);
+            $controller->disapproveEvent($eventId, $currentPage);
+        }
+        else if (preg_match('#^admin/events/delete/(\d+)$#', parse_url($uri, PHP_URL_PATH), $matches)) {
+            $eventId = $matches[1];
+            $currentPage = $_GET['page'] ?? 1; // Get the current page from the query string
+            $controller = new AdminController($twig, $pdo);
+            $controller->deleteEvent($eventId, $currentPage);
+        }        
         elseif (preg_match('#^admin/users/edit/(\d+)$#', $uri, $matches)) {
             $userId = $matches[1];
             $controller = new AdminController($twig, $pdo);

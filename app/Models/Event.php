@@ -178,13 +178,41 @@ class Event {
         // Validate and update the specified event
     }
 
-    public function deleteEventById($eventId) {
-        $stmt = $this->db->prepare("DELETE FROM events WHERE id = :eventId");
+    public function deleteEventCategoryMappings($eventId) {
+        $stmt = $this->db->prepare("DELETE FROM event_category_mapping WHERE event_id = :eventId");
         return $stmt->execute([':eventId' => $eventId]);
     }
 
+    public function deleteEventById($eventId) {
+        try {
+            // Begin transaction
+            $this->db->beginTransaction();
+    
+            // First, delete related records in event_category_mapping
+            $this->deleteEventCategoryMappings($eventId);
+        
+            // Then, delete the event itself
+            $stmt = $this->db->prepare("DELETE FROM events WHERE event_id = :eventId");
+            $stmt->execute([':eventId' => $eventId]);
+    
+            // Commit the transaction
+            $this->db->commit();
+            return true;
+        } catch (PDOException $e) {
+            // Rollback the transaction on error
+            $this->db->rollBack();
+            // Optionally, you can log the error message: $e->getMessage();
+            return false;
+        }
+    }    
+
+    public function approveEventById($eventId) {
+        // 1' represents the status of an approved event
+        return $this->setEventApprovalStatus($eventId, 1);
+    }
+
     public function setEventApprovalStatus($eventId, $status) {
-        $stmt = $this->db->prepare("UPDATE events SET is_approved = :status WHERE id = :eventId");
+        $stmt = $this->db->prepare("UPDATE events SET is_approved = :status WHERE event_id = :eventId");
         return $stmt->execute([':status' => $status, ':eventId' => $eventId]);
     }
 

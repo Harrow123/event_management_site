@@ -46,12 +46,12 @@
                         <a href="/event_management_site/admin/events/details/{{ event.event_id }}" class="text-blue-600 hover:text-blue-900">View</a>
                         
                         {% if event.is_approved %}
-                            <a href="/event_management_site/admin/events/disapprove/{{ event.event_id }}" class="text-yellow-600 hover:text-yellow-900 border px-2 py-1 rounded transition duration-300 ease-in-out">Disapprove</a>
+                            <a href="/event_management_site/admin/events/disapprove/{{ event.event_id }}?page={{ currentPage }}" class="text-yellow-600 hover:text-yellow-900 border px-2 py-1 rounded transition duration-300 ease-in-out">Disapprove</a>
                         {% else %}
-                            <a href="/event_management_site/admin/events/approve/{{ event.event_id }}" class="text-green-600 hover:text-green-900 border px-2 py-1 rounded transition duration-300 ease-in-out">Approve</a>
+                            <a href="/event_management_site/admin/events/approve/{{ event.event_id }}?page={{ currentPage }}" class="text-green-600 hover:text-green-900 border px-2 py-1 rounded transition duration-300 ease-in-out">Approve</a>
                         {% endif %}
                         
-                        <a href="/event_management_site/admin/events/delete/{{ event.event_id }}" class="text-red-600 hover:text-red-900 border px-2 py-1 rounded transition duration-300 ease-in-out" onclick="return confirm('Are you sure you want to delete this event?')">Delete</a>
+                        <a href="/event_management_site/admin/events/delete/{{ event.event_id }}?page={{ currentPage }}" class="text-red-600 hover:text-red-900 border px-2 py-1 rounded transition duration-300 ease-in-out" onclick="return confirm('Are you sure you want to delete this event?')">Delete</a>
                     </td>
 
                 </tr>
