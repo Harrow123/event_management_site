@@ -1,0 +1,24 @@
+{% block content %}
+    <div class="container mx-auto p-6">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex justify-between items-center">
+                <h1 class="text-3xl font-semibold">{{ event.title }}</h1>
+                <div class="gap-3">
+                <a href="/event_management_site/admin/events" class="text-blue-600 hover:text-blue-700 transition duration-300 ease-in-out">&larr; Back to Events</a>
+                <a href="/event_management_site/admin/events/edit/{{ event.event_id }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out">Edit Event</a>
+                </div>
+            </div>
+            <p class="text-gray-600 text-sm mt-2">{{ event.start_date|date('F j, Y') }} - {{ event.end_date|date('F j, Y') }}</p>
+            {% if event.image_url %}
+                <img src="{{ event.image_url }}" alt="{{ event.title }}" class="w-full h-60 object-cover rounded mt-4">
+            {% endif %}
+            <div class="text-gray-700 mt-4">
+                <p>{{ event.description }}</p>
+                <p class="mt-4">Venue: {{ event.venue }}</p>
+                {% if event.is_featured %}
+                    <span class="inline-block bg-blue-200 text-blue-800 text-xs px-2 rounded-full uppercase font-semibold tracking-wide mt-4">Featured</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

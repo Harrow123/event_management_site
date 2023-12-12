@@ -1,0 +1,19 @@
+{% block content %}
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-semibold mb-6">Create Event</h1>
+    <form action="/admin/events/create" method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
+                Title
+            </label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="title" name="title" type="text" placeholder="Event Title" required>
+        </div>
+        <!-- Include other fields such as description, start_date, end_date, venue -->
+        <div class="flex items-center justify-between">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                Create Event
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% block content %}
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-semibold mb-6">User List</h1>
+    <div class="bg-white shadow-md rounded my-6">
+        <table class="min-w-full leading-normal">
+            <thead>
+                <tr>
+                    <th class="px-5 py-3 bg-blue-600 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                        Full Name
+                    </th>
+                    <th class="px-5 py-3 bg-blue-600 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                        Username
+                    </th>
+                    <th class="px-5 py-3 bg-blue-600 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                        Email
+                    </th>
+                    <!-- Additional headers like Role, Status, etc. -->
+                    <th class="px-5 py-3 bg-blue-600 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p class="text-gray-900 whitespace-no-wrap">{{ user.name }}</p>
+                    </td>
+                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p class="text-gray-900 whitespace-no-wrap">{{ user.username }}</p>
+                    </td>
+                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p class="text-gray-900 whitespace-no-wrap">{{ user.email }}</p>
+                    </td>
+                    <!-- Additional columns for Role, Status, etc. -->
+                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <a href="/event_management_site/admin/users/edit/{{ user.user_id }}" class="text-blue-600 hover:text-blue-900">Edit</a>
+                        <!-- Additional actions like View, Delete, etc. -->
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

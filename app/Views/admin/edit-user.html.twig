@@ -1,0 +1,70 @@
+{# {% block content %}
+<!-- Form for editing a user -->
+<form action="/admin/users/edit/{{ user.id }}" method="post">
+    <!-- User form fields with user data pre-filled -->
+    <!-- Exclude email and profile picture fields -->
+    <!-- ... -->
+    <button type="submit">Save Changes</button>
+</form>
+{% endblock %} #}
+
+{% block content %}
+<div class="form-container mx-auto mt-8 p-4">
+    <h1 class="text-3xl font-semibold">Edit User</h1>
+
+    <form action="/event_management_site/admin/users/edit/{{ user.user_id }}" method="POST" class="mt-4">
+        <!-- User details input fields -->
+        <div class="mb-4">
+            <label for="username" class="block font-semibold">Username</label>
+            <input type="text" name="username" id="username" class="form-input w-full" value="{{ user.username }}" required>
+        </div>
+
+        <div class="mb-4">
+            <label for="name" class="block font-semibold">Full Name</label>
+            <input type="text" name="name" id="funamellname" class="form-input w-full" value="{{ user.name }}" required>
+        </div>
+        <div class="mb-4">
+            <label for="address" class="block font-semibold">Address</label>
+            <input type="text" name="address" id="address" class="form-input w-full" value="{{ user.address }}" required>
+        </div>
+        <div class="mb-4">
+            <label for="gender" class="block font-semibold">Gender</label>
+            <select class="form-input" name="gender" id="gender" required>
+                <option value="" disabled>Select Gender</option>
+                <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>
+                <option value="Female" {% if user.gender == 'Female' %}selected{% endif %}>Female</option>
+                <option value="Other" {% if user.gender == 'Other' %}selected{% endif %}>Other</option>
+            </select>
+        </div>
+
+
+        <!-- Email and profile picture are not editable by admin -->
+        <div class="mb-4">
+            <label class="block font-semibold">Email</label>
+            <p>{{ user.email }}</p>
+        </div>
+        
+        <div class="mb-4">
+            <label class="block font-semibold">Profile Picture</label>
+            {% if user.profile_picture %}
+                <img src="{{user.profile_picture}}" alt="{{user.name}} profile picture" class="w-32 h-32 object-cover rounded mt-2">
+            {% else %}
+                <p>No picture available</p>
+            {% endif %}
+        </div>
+
+        <div class="mb-4">
+            <label for="password" class="block font-semibold">Password</label>
+            <input type="password" name="password" id="password" class="form-input w-full">
+        </div>
+        <div class="mb-4">
+            <label for="confirm_password" class="block font-semibold">Confirm Password</label>
+            <input type="password" name="confirm_password" id="confirm_password" class="form-input w-full">
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600">Save Changes</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

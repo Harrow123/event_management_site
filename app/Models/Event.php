@@ -98,7 +98,36 @@ class Event {
             $this->db->rollBack();
             return ['success' => false, 'error' => 'An error occurred while creating the event.'];
         }
-    }    
+    }  
+    
+    public function updateEventById($eventId, $eventData) {
+        // Begin transaction
+        $this->db->beginTransaction();
+        
+        try {
+            $query = "UPDATE Events SET title = :title, description = :description, start_date = :start_date, end_date = :end_date, venue = :venue WHERE event_id = :event_id";
+            $stmt = $this->db->prepare($query);
+
+            // Bind values
+            $stmt->bindValue(':title', $eventData['title']);
+            $stmt->bindValue(':description', $eventData['description']);
+            $stmt->bindValue(':start_date', $eventData['start_date']);
+            $stmt->bindValue(':end_date', $eventData['end_date']);
+            $stmt->bindValue(':venue', $eventData['venue']);
+            $stmt->bindValue(':event_id', $eventId);
+
+            // Execute the statement
+            $stmt->execute();
+            
+            // Commit transaction
+            $this->db->commit();
+            return true;
+        } catch (PDOException $e) {
+            // Roll back if there is an error
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
 
     public function mapEventToCategory($eventId, $categoryId) {
         try {
@@ -132,5 +161,22 @@ class Event {
 
     public function approveEvent($eventId) {
         // Set is_approved to true for the event
+        $stmt = $this->db->prepare("UPDATE Events SET is_approved = 1 WHERE event_id = ?");
+        $stmt->execute([$eventId]);
+    }
+
+    public function getTotalEvents() {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM Events");
+        return $stmt->fetchColumn(); // Fetch the count from the first column
+    }
+
+    public function getApprovedEventsCount() {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM Events WHERE is_approved = 1");
+        return $stmt->fetchColumn(); // Fetch the count from the first column
+    }
+
+    public function getPendingEventsCount() {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM Events WHERE is_approved = 0");
+        return $stmt->fetchColumn(); // Fetch the count from the first column
     }
 }

@@ -104,6 +104,7 @@ switch ($uri) {
         break;
     // Admin routes
     case 'admin':
+    case 'admin/':
         $controller = new AdminController($twig, $pdo);
         $controller->dashboard();
         break;
@@ -118,6 +119,13 @@ switch ($uri) {
         $controller = new AdminController($twig, $pdo);
         $controller->listEvents();
         break;
+    // case 'admin/events/details/{event_id}':
+    //     $controller = new AdminController($twig, $pdo);
+    //     $eventId = $_GET['event_id'] ?? null;
+    //     if ($eventId) {
+    //         $controller->eventDetails($eventId);
+    //     }
+    //     break;
     case 'admin/events/create':
         $controller = new AdminController($twig, $pdo);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -126,17 +134,63 @@ switch ($uri) {
             $controller->showCreateEventPage();
         }
             break;
+    case 'admin/events/approve':
+        $eventId = $_GET['event_id'] ?? null;
+        if ($eventId) {
+            $controller = new AdminController($twig, $pdo);
+            $controller->approveEvent($eventId);
+        }
+        break;
     case 'admin/users':
         $controller = new AdminController($twig, $pdo);
         $controller->listUsers();
         break;
+        case 'admin/users/edit':
+            // Assuming you have a user ID passed as a GET parameter
+            $userId = $_GET['user_id'] ?? null;
+            if ($userId) {
+                $controller = new AdminController($twig, $pdo);
+                if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                    $controller->editUser($userId, $_POST);
+                } else {
+                    $controller->editUserPage($userId);
+                }
+            }
+            break;
     default:
         if (preg_match('/^events\/details\/(\d+)$/', $uri, $matches)) {
             // Dynamic route for event details
             $eventId = $matches[1];
             $controller = new EventController($twig, $pdo, $base_url);
             $controller->viewEvent($eventId);
-        } else {
+        } 
+        else if (preg_match('#^admin/events/details/(\d+)$#', $uri, $matches)) {
+            $eventId = $matches[1];
+            $controller = new AdminController($twig, $pdo);
+            $controller->eventDetails($eventId);
+        }
+        else if (preg_match('#^admin/events/edit/(\d+)$#', $uri, $matches)) {
+            $eventId = $matches[1];
+            $controller = new AdminController($twig, $pdo);
+        
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                // Handle POST request for event editing
+                $controller->editEvent($eventId, $_POST);
+            } else {
+                // Show the event edit page
+                $controller->editEventPage($eventId);
+            }
+        }
+        elseif (preg_match('#^admin/users/edit/(\d+)$#', $uri, $matches)) {
+            $userId = $matches[1];
+            $controller = new AdminController($twig, $pdo);
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                $controller->editUser($userId, $_POST);
+            } else {
+                $controller->editUserPage($userId);
+            }
+        }
+        else {
             // No route matched, display page not found
             echo "<p>Page not found</p>";
         }

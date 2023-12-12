@@ -27,6 +27,15 @@ class User {
         return $stmt->fetchColumn() > 0;
     }
 
+    //write a method to get if the user is a admin based on the session
+    public function isAdmin() {
+        $stmt = $this->db->prepare("SELECT is_admin FROM users WHERE user_id = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        $isAdmin = $stmt->fetchColumn();
+    
+        return $isAdmin;
+    }
+
     public function register($name, $username, $email, $password, $gender, $address, $profile_picture) {
         // Check if the email is already registered
         $stmt = $this->db->prepare("SELECT * FROM Users WHERE email = ?");
@@ -76,6 +85,12 @@ class User {
         $stmt = $this->db->prepare("SELECT * FROM Users WHERE user_id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch();
+    }
+
+    public function getAllUsers() {
+        $stmt = $this->db->prepare("SELECT * FROM Users where is_admin=0");
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
 
     public function getUserEvents($userId) {
@@ -148,6 +163,51 @@ class User {
             error_log("Database error: " . $e->getMessage()); // Log the error
             return false;
         }
-    }    
+    }  
+
+    public function updateUserById($userId, $userData) {
+        // Begin transaction
+        $this->db->beginTransaction();
+        
+        try {
+            $query = "UPDATE Users SET username = :username, name = :name, address = :address, gender = :gender WHERE user_id = :user_id";
+
+            // If password is set and not empty, include it in the update
+            if (!empty($userData['password'])) {
+                $userData['password'] = password_hash($userData['password'], PASSWORD_DEFAULT);
+                $query = "UPDATE Users SET username = :username, name = :name, address = :address, gender = :gender, password = :password WHERE user_id = :user_id";
+            }
+
+            $stmt = $this->db->prepare($query);
+
+            // Bind values
+            $stmt->bindValue(':username', $userData['username']);
+            $stmt->bindValue(':name', $userData['name']);
+            $stmt->bindValue(':address', $userData['address']);
+            $stmt->bindValue(':gender', $userData['gender']);
+            $stmt->bindValue(':user_id', $userId);
+
+            // Bind password if it's set
+            if (!empty($userData['password'])) {
+                $stmt->bindValue(':password', $userData['password']);
+            }
+
+            // Execute the statement
+            $stmt->execute();
+            
+            // Commit transaction
+            $this->db->commit();
+        } catch (PDOException $e) {
+            // Roll back if there is an error
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+    
+    public function getTotalUsers() {
+        // Logic to fetch the total number of users
+        $stmt = $this->db->query("SELECT COUNT(*) FROM Users");
+        return $stmt->fetchColumn(); // Fetch the count from the first column
+    }
     
 }
