@@ -1,4 +1,4 @@
-{% block content %}
+{# {% block content %}
 <div class="container mx-auto p-6">
     <h1 class="text-3xl font-semibold mb-6">Create Event</h1>
     <form action="/admin/events/create" method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -16,4 +16,89 @@
         </div>
     </form>
 </div>
+{% endblock %} #}
+
+{% block content %}
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-semibold mb-6">Create Event</h1>
+    <form action="/admin/events/create" method="post" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <!-- Title -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
+                Title
+            </label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="title" name="title" type="text" placeholder="Event Title" required>
+        </div>
+        
+        <!-- Description -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
+                Description
+            </label>
+            <textarea id="description" name="description" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Event Description" required></textarea>
+        </div>
+
+        <!-- Start Date and Time -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="start_date">
+                Start Date and Time
+            </label>
+            <input type="date" name="start_date" id="start_date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+            <input type="time" name="start_time" id="start_time" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+        </div>
+
+        <!-- End Date and Time -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="end_date">
+                End Date and Time
+            </label>
+            <input type="date" name="end_date" id="end_date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+            <input type="time" name="end_time" id="end_time" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+        </div>
+
+        <!-- Venue -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="venue">
+                Venue
+            </label>
+            <input type="text" name="venue" id="venue" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+        </div>
+
+        <!-- Category Selection -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="category_id">
+                Categories
+            </label>
+            <select id="category_id" name="category_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                {% for category in categories %}
+                    <option value="{{ category.category_id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Event Image Upload -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="event_image">
+                Event Image
+            </label>
+            <input type="file" name="event_image" id="event_image" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+
+        <!-- Featured Event Checkbox -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="is_featured">
+                Featured Event
+            </label>
+            <input type="checkbox" id="is_featured" name="is_featured" value="1" class="shadow appearance-none border rounded h-5 w-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex items-center justify-between">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                Create Event
+            </button>
+        </div>
+    </form>
+</div>
 {% endblock %}
+

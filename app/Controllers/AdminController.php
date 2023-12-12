@@ -299,6 +299,5 @@ class AdminController {
         }
     }
 
-
     // Additional admin methods as needed...
 }
