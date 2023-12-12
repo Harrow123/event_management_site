@@ -1,4 +1,5 @@
 <?php
+use Utils\UrlHelper;
 require_once __DIR__ . "/../Models/User.php";
 
 class UserController {
@@ -8,6 +9,7 @@ class UserController {
     public function __construct($twig,$db) {
         $this->twig = $twig;
         $this->userModel = new User($db);
+        // $this->baseUrl = UrlHelper::getBaseUrl();
     }
 
     public function showEditProfilePage($userData = [], $validationErrors = []) {

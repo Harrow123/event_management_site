@@ -1,4 +1,5 @@
 <?php
+use Utils\UrlHelper;
 require_once "app/Config/database.php";
 require_once "app/Controllers/UserController.php";
 require_once "app/Controllers/HomeController.php";
@@ -8,12 +9,15 @@ require_once "app/Controllers/EventController.php";
 require_once "app/Utils/Authentication.php";
 require_once "app/Controllers/CategoryController.php";
 
+require_once __DIR__ . '/app/Utils/UrlHelper.php';
+
 $authentication = new Authentication();
 
 $twig = require_once 'bootstrap.php';
 
 // Base URL for routing
 $base_url = '/event_management_site/';
+$site_fullname=UrlHelper::getBaseUrl();
 
 // Debugging: Print the original URI
 // echo "Original URI: " . $_SERVER['REQUEST_URI'] . "<br>";
@@ -54,11 +58,25 @@ switch ($uri) {
         include 'app/Views/about.php';
         break;
     case 'users/profile':
+        // Check if the user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            // User is not logged in, redirect to login page
+            header('Location: ' . $site_fullname . 'auth/login');
+            exit();
+        }
+
         $userId = $_SESSION['user_id'];
         $controller = new UserController($twig,$pdo);
         $controller->getUserProfile($userId);
         break;
     case 'users/edit-profile':
+         // Check if the user is logged in
+         if (!isset($_SESSION['user_id'])) {
+            // User is not logged in, redirect to login page
+            header('Location: ' . $site_fullname . 'auth/login');
+            exit();
+        }
+
         $userId = $_SESSION['user_id'];
         $controller = new UserController($twig,$pdo);
         $controller->updateProfile();
@@ -83,6 +101,13 @@ switch ($uri) {
         $controller -> listEvents($twig);
         break;
     case 'events/create':
+        // Check if the user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            // User is not logged in, redirect to login page
+            header('Location: ' . $site_fullname . 'auth/login');
+            exit();
+        }
+
         $controller = new EventController($twig, $pdo, $base_url);
         $controller->createEvent(); // Create a new event
         break;
@@ -99,16 +124,37 @@ switch ($uri) {
         break;
     
     case preg_match('/^events\/attend\/(\d+)$/', $uri, $matches) ? true : false:
+        // Check if the user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            // User is not logged in, redirect to login page
+            header('Location: ' . $site_fullname . 'auth/login');
+            exit();
+        }
+
         $eventId = $matches[1];
         $controller = new EventController($twig, $pdo, $base_url);
         $controller->attendEvent($eventId);
         break;
     case preg_match('/^events\/cancel-attendance\/(\d+)$/', $uri, $matches) ? true : false:
+        // Check if the user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            // User is not logged in, redirect to login page
+            header('Location: ' . $site_fullname . 'auth/login');
+            exit();
+        }
+
         $eventId = $matches[1];
         $controller = new EventController($twig, $pdo, $base_url);
         $controller->cancelAttendance($eventId);
         break;
     case 'users/events':
+        // Check if the user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            // User is not logged in, redirect to login page
+            header('Location: ' . $site_fullname . 'auth/login');
+            exit();
+        }
+
         // Handle user's events page, including ongoing, past, and attended events
         $userId = $_GET['id'] ?? 1; // Get the user ID from the query parameter
         // $controller = new UserController($twig,$pdo);
@@ -123,6 +169,13 @@ switch ($uri) {
     // Admin routes
     case 'admin':
     case 'admin/':
+        // Check if the admin is logged in
+        if (!isset($_SESSION['admin_id'])) {
+            // User is not logged in, redirect to login page
+            header('Location: ' . $site_fullname . 'admin/login');
+            exit();
+        }
+
         $controller = new AdminController($twig, $pdo);
         $controller->dashboard();
         break;
@@ -154,6 +207,13 @@ switch ($uri) {
     //     }
     //     break;
     case 'admin/events/create':
+        // Check if the admin is logged in
+        if (!isset($_SESSION['admin_id'])) {
+            // User is not logged in, redirect to login page
+            header('Location: ' . $site_fullname . 'admin/login');
+            exit();
+        }
+
         $controller = new AdminController($twig, $pdo);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $controller->createEvent($_POST);
@@ -162,6 +222,13 @@ switch ($uri) {
         }
         break;
     case 'admin/events/approve':
+        // Check if the admin is logged in
+        if (!isset($_SESSION['admin_id'])) {
+            // User is not logged in, redirect to login page
+            header('Location: ' . $site_fullname . 'admin/login');
+            exit();
+        }
+
         $eventId = $_GET['event_id'] ?? null;
         if ($eventId) {
             $controller = new AdminController($twig, $pdo);
@@ -169,10 +236,24 @@ switch ($uri) {
         }
         break;
     case 'admin/users':
+        // Check if the admin is logged in
+        if (!isset($_SESSION['admin_id'])) {
+            // User is not logged in, redirect to login page
+            header('Location: ' . $site_fullname . 'admin/login');
+            exit();
+        }
+
         $controller = new AdminController($twig, $pdo);
         $controller->listUsers();
         break;
     case 'admin/users/edit':
+        // Check if the admin is logged in
+        if (!isset($_SESSION['admin_id'])) {
+            // User is not logged in, redirect to login page
+            header('Location: ' . $site_fullname . 'admin/login');
+            exit();
+        }
+
         // Assuming you have a user ID passed as a GET parameter
         $userId = $_GET['user_id'] ?? null;
         if ($userId) {
@@ -185,6 +266,12 @@ switch ($uri) {
         }
         break;
         case 'admin/users/create':
+            // Check if the admin is logged in
+            if (!isset($_SESSION['admin_id'])) {
+                // User is not logged in, redirect to login page
+                header('Location: ' . $site_fullname . 'admin/login');
+                exit();
+            }
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Handle POST request for creating a new user
                 $adminController->createUser($_POST);
@@ -196,6 +283,13 @@ switch ($uri) {
     default:
         // Handle dynamic routes for events, categories, and users
         if (preg_match('#^admin/events$#', parse_url($uri, PHP_URL_PATH))) {
+            // Check if the admin is logged in
+            if (!isset($_SESSION['admin_id'])) {
+                // User is not logged in, redirect to login page
+                header('Location: ' . $site_fullname . 'admin/login');
+                exit();
+            }
+
             $controller = new AdminController($twig, $pdo);
             // Use $_GET to retrieve the 'page' query parameter
             $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -208,11 +302,25 @@ switch ($uri) {
             $controller->viewEvent($eventId);
         } 
         else if (preg_match('#^admin/events/details/(\d+)$#', $uri, $matches)) {
+            // Check if the admin is logged in
+            if (!isset($_SESSION['admin_id'])) {
+                // User is not logged in, redirect to login page
+                header('Location: ' . $site_fullname . 'admin/login');
+                exit();
+            }
+
             $eventId = $matches[1];
             $controller = new AdminController($twig, $pdo);
             $controller->eventDetails($eventId);
         }
         else if (preg_match('#^admin/events/edit/(\d+)$#', $uri, $matches)) {
+            // Check if the admin is logged in
+            if (!isset($_SESSION['admin_id'])) {
+                // User is not logged in, redirect to login page
+                header('Location: ' . $site_fullname . 'admin/login');
+                exit();
+            }
+
             $eventId = $matches[1];
             $controller = new AdminController($twig, $pdo);
         
@@ -225,24 +333,52 @@ switch ($uri) {
             }
         }
         else if (preg_match('#^admin/events/approve/(\d+)$#', parse_url($uri, PHP_URL_PATH), $matches)) {
+            // Check if the admin is logged in
+            if (!isset($_SESSION['admin_id'])) {
+                // User is not logged in, redirect to login page
+                header('Location: ' . $site_fullname . 'admin/login');
+                exit();
+            }
+
             $eventId = $matches[1];
             $currentPage = $_GET['page'] ?? 1; // Get the current page from the query string
             $controller = new AdminController($twig, $pdo);
             $controller->approveEvent($eventId, $currentPage);
         } 
         else if (preg_match('#^admin/events/disapprove/(\d+)$#', parse_url($uri, PHP_URL_PATH), $matches)) {
+            // Check if the admin is logged in
+            if (!isset($_SESSION['admin_id'])) {
+                // User is not logged in, redirect to login page
+                header('Location: ' . $site_fullname . 'admin/login');
+                exit();
+            }
+
             $eventId = $matches[1];
             $currentPage = $_GET['page'] ?? 1; // Get the current page from the query string
             $controller = new AdminController($twig, $pdo);
             $controller->disapproveEvent($eventId, $currentPage);
         }
         else if (preg_match('#^admin/events/delete/(\d+)$#', parse_url($uri, PHP_URL_PATH), $matches)) {
+            // Check if the admin is logged in
+            if (!isset($_SESSION['admin_id'])) {
+                // User is not logged in, redirect to login page
+                header('Location: ' . $site_fullname . 'admin/login');
+                exit();
+            }
+
             $eventId = $matches[1];
             $currentPage = $_GET['page'] ?? 1; // Get the current page from the query string
             $controller = new AdminController($twig, $pdo);
             $controller->deleteEvent($eventId, $currentPage);
         }        
         elseif (preg_match('#^admin/users/edit/(\d+)$#', $uri, $matches)) {
+            // Check if the admin is logged in
+            if (!isset($_SESSION['admin_id'])) {
+                // User is not logged in, redirect to login page
+                header('Location: ' . $site_fullname . 'admin/login');
+                exit();
+            }
+
             $userId = $matches[1];
             $controller = new AdminController($twig, $pdo);
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
