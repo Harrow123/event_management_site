@@ -1,0 +1,40 @@
+{% block content %}
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-semibold mb-6">My Events</h1>
+
+        <h2 class="text-2xl font-semibold mt-4">Created Events</h2>
+        {% if createdEvents|length > 0 %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for event in createdEvents %}
+                    <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition">
+                        <img src="{{ event.image_url }}" alt="{{ event.title }}" class="w-full h-40 object-cover rounded mb-4">
+                        <h3 class="text-xl font-semibold">{{ event.title }}</h3>
+                        <p class="text-gray-600 text-sm">{{ event.start_date|date('F j, Y') }}</p>
+                        <p class="text-gray-700 mt-2">{{ event.description }}</p>
+                        <a href="/event_management_site/events/details/{{ event.event_id }}" class="text-blue-500 hover:underline mt-4 inline-block">Details</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No events created yet.</p>
+        {% endif %}
+
+        <h2 class="text-2xl font-semibold mt-6">Attended Events</h2>
+        {% if attendedEvents|length > 0 %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for event in attendedEvents %}
+                    <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition">
+                        <img src="{{ event.image_url }}" alt="{{ event.title }}" class="w-full h-40 object-cover rounded mb-4">
+                        <h3 class="text-xl font-semibold">{{ event.title }}</h3>
+                        <p class="text-gray-600 text-sm">{{ event.start_date|date('F j, Y') }}</p>
+                        <p class="text-gray-700 mt-2">{{ event.description }}</p>
+                        <a href="/event_management_site/events/details/{{ event.event_id }}" class="text-blue-500 hover:underline mt-4 inline-block">Details</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No attended events yet.</p>
+        {% endif %}
+    </div>
+{% endblock %}
+

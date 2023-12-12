@@ -14,11 +14,13 @@
             <!-- Navigation Links -->
             <div class="hidden md:flex items-center space-x-4">
                 <a href="<?php echo $base_url; ?>" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Home</a>
-                <a href="<?php echo $base_url; ?>events" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Find Events</a>
                 <a href="<?php echo $base_url; ?>about" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">About</a>
                 <a href="<?php echo $base_url; ?>contact" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Contact</a>
+                <a href="<?php echo $base_url; ?>events" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Find Events</a>
+                
                 <!-- Conditional authentication links -->
                 <?php if ($authentication->isLoggedIn()) : ?>
+                    <a href="<?php echo $base_url; ?>users/events" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">My Events</a>
                     <a href="<?php echo $base_url; ?>events/create" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Create Event</a>
                     <a href="<?php echo $base_url; ?>users/profile" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Profile</a>
                     <a href="<?php echo $base_url; ?>auth/logout" class="hover:bg-white hover:text-green-400 px-3 py-2 rounded transition">Logout</a>

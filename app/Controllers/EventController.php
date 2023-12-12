@@ -73,6 +73,31 @@ class EventController {
             'isAttending' => $isAttending
         ]);
     }   
+
+    public function viewUserEvents() {
+        $userId = $_SESSION['user_id'] ?? null;
+        if (!$userId) {
+            // Redirect to login or handle not logged in user
+        }
+    
+        $createdEvents = $this->eventModel->getUserCreatedEvents($userId);
+        $attendedEvents = $this->eventModel->getUserAttendedEvents($userId);
+
+        // Append the image URL to each created event
+        foreach ($createdEvents as $key => $event) {
+            $createdEvents[$key]['image_url'] = '/event_management_site/public/assets/images/event_images/' . $event['image_path'];
+        }
+
+        // Append the image URL to each attended event
+        foreach ($attendedEvents as $key => $event) {
+            $attendedEvents[$key]['image_url'] = '/event_management_site/public/assets/images/event_images/' . $event['image_path'];
+        }
+    
+        echo $this->twig->render('users/my-events.html.twig', [
+            'createdEvents' => $createdEvents,
+            'attendedEvents' => $attendedEvents
+        ]);
+    }    
     
     public function attendEvent($eventId) {
         // Check if the user is logged in

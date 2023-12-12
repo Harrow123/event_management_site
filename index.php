@@ -111,8 +111,9 @@ switch ($uri) {
     case 'users/events':
         // Handle user's events page, including ongoing, past, and attended events
         $userId = $_GET['id'] ?? 1; // Get the user ID from the query parameter
-        $controller = new UserController($twig,$pdo);
-        $controller->userEvents($userId);
+        // $controller = new UserController($twig,$pdo);
+        $controller = new EventController($twig, $pdo, $base_url);
+        $controller->viewUserEvents($userId);
         break;
     case 'auth/logout':
         $controller = new Authentication();

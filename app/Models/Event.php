@@ -14,6 +14,25 @@ class Event {
         return $stmt->fetchAll();
     }
 
+    public function getUserCreatedEvents($userId) {
+        $stmt = $this->db->prepare("SELECT * FROM Events WHERE organizer_id = :userId ORDER BY start_date DESC");
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }    
+    
+    public function getUserAttendedEvents($userId) {
+        $stmt = $this->db->prepare("
+            SELECT e.* FROM Events e
+            JOIN Bookings b ON e.event_id = b.event_id
+            WHERE b.user_id = :userId AND b.status = 'Attending'
+            ORDER BY e.start_date DESC
+        ");
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }    
+
     public function isUserAttending($eventId, $userId) {
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM Bookings WHERE event_id = :eventId AND user_id = :userId");
         $stmt->bindParam(':eventId', $eventId, PDO::PARAM_INT);
@@ -76,7 +95,7 @@ class Event {
     }
 
     public function getAllEventsWithOrganizer() {
-        // Example SQL query that joins the events table with the users table
+        // SQL query that joins the events table with the users table
         // to get the organizer's name. Adjust according to your database schema.
         $sql = "SELECT e.*, u.name as organizer_name FROM events e JOIN users u ON e.organizer_id = u.user_id";
         $stmt = $this->db->query($sql);
