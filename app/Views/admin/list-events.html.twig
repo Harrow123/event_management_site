@@ -10,6 +10,12 @@
                     </th>
                     <!-- Add other headers like Date, Venue, etc. -->
                     <th class="px-5 py-3 bg-blue-600 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                        Organizer
+                    </th>
+                    <th class="px-5 py-3 bg-blue-600 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                        Status
+                    </th>
+                    <th class="px-5 py-3 bg-blue-600 text-left text-xs font-semibold text-white uppercase tracking-wider">
                         Actions
                     </th>
                 </tr>
@@ -26,14 +32,45 @@
                             </div>
                         </div>
                     </td>
-                    <!-- Add other columns here -->
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <a href="events/details/{{ event.event_id }}" class="text-blue-600 hover:text-blue-900">View</a>
+                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        {{ event.organizer_name }}
                     </td>
+                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        {{ event.is_approved ? 'Approved' : 'Pending' }}
+                    </td>
+                    <!-- Add other columns here -->
+                    {# <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <a href="events/details/{{ event.event_id }}" class="text-blue-600 hover:text-blue-900">View</a>
+                    </td> #}
+                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm space-x-3">
+                        <a href="/event_management_site/admin/events/details/{{ event.event_id }}" class="text-blue-600 hover:text-blue-900">View</a>
+                        
+                        {% if event.is_approved %}
+                            <a href="/event_management_site/admin/events/disapprove/{{ event.event_id }}" class="text-yellow-600 hover:text-yellow-900 border px-2 py-1 rounded transition duration-300 ease-in-out">Disapprove</a>
+                        {% else %}
+                            <a href="/event_management_site/admin/events/approve/{{ event.event_id }}" class="text-green-600 hover:text-green-900 border px-2 py-1 rounded transition duration-300 ease-in-out">Approve</a>
+                        {% endif %}
+                        
+                        <a href="/event_management_site/admin/events/delete/{{ event.event_id }}" class="text-red-600 hover:text-red-900 border px-2 py-1 rounded transition duration-300 ease-in-out" onclick="return confirm('Are you sure you want to delete this event?')">Delete</a>
+                    </td>
+
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+    <div class="py-3">
+        <nav class="block">
+            <ul class="flex pl-0 rounded list-none flex-wrap">
+                {% for i in 1..totalPages %}
+                    <li>
+                        <a href="/event_management_site/admin/events?page={{ i }}" class="{{ currentPage == i ? 'text-blue-700' : 'text-blue-500' }} py-2 px-3 leading-tight bg-white border border-r-0 border-blue-500 hover:bg-blue-500 hover:text-white">
+                            {{ i }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </nav>
     </div>
 </div>
 {% endblock %}

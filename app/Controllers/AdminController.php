@@ -166,9 +166,15 @@ class AdminController {
         ]);
     }
 
-    public function listEvents() {
+    public function listEvents($page = 1) {
+        $limit = 10; // Number of events per page
+        $offset = ($page - 1) * $limit;
+        $totalEvents = $this->eventModel->getTotalEventsCount();
+        $totalPages = ceil($totalEvents / $limit);
+
         // Fetch events from the Event model
-        $events = $this->eventModel->getAllEvents();
+        // $events = $this->eventModel->getAllEventsWithOrganizer();
+        $events = $this->eventModel->getEventsForPage($limit, $offset);
 
         // Append the image URL to each event
         foreach ($events as $key => $event) {
@@ -179,7 +185,12 @@ class AdminController {
         $categories = $this->categoryModel->getAllCategories();
 
         // Render the list.html.twig with fetched events
-        echo $this->twig->render('admin/list-events.html.twig', ['events' => $events, 'categories' => $categories]);
+        echo $this->twig->render('admin/list-events.html.twig', [
+            'events' => $events, 
+            'categories' => $categories,
+            'totalPages' => $totalPages,
+            'currentPage' => $page
+        ]);
     }
 
     public function eventDetails($eventId) {

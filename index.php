@@ -118,7 +118,8 @@ switch ($uri) {
         break;
     case 'admin/events':
         $controller = new AdminController($twig, $pdo);
-        $controller->listEvents();
+        $currentPage = $_GET['page'] ?? 1;
+        $controller->listEvents($currentPage);
         break;
     // case 'admin/events/details/{event_id}':
     //     $controller = new AdminController($twig, $pdo);

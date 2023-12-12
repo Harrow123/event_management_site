@@ -14,6 +14,29 @@ class Event {
         return $stmt->fetchAll();
     }
 
+    public function getTotalEventsCount() {
+        $sql = "SELECT COUNT(*) FROM events";
+        $stmt = $this->db->query($sql);
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function getEventsForPage($limit, $offset) {
+        $sql = "SELECT e.*, u.name as organizer_name FROM events e JOIN users u ON e.organizer_id = u.user_id LIMIT :limit OFFSET :offset";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllEventsWithOrganizer() {
+        // Example SQL query that joins the events table with the users table
+        // to get the organizer's name. Adjust according to your database schema.
+        $sql = "SELECT e.*, u.name as organizer_name FROM events e JOIN users u ON e.organizer_id = u.user_id";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getFeaturedEvents() {
         // Assuming your database query to fetch featured events
         // Modify the query according to your database structure
@@ -155,14 +178,14 @@ class Event {
         // Validate and update the specified event
     }
 
-    public function deleteEvent($eventId) {
-        // Delete the specified event
+    public function deleteEventById($eventId) {
+        $stmt = $this->db->prepare("DELETE FROM events WHERE id = :eventId");
+        return $stmt->execute([':eventId' => $eventId]);
     }
 
-    public function approveEvent($eventId) {
-        // Set is_approved to true for the event
-        $stmt = $this->db->prepare("UPDATE Events SET is_approved = 1 WHERE event_id = ?");
-        $stmt->execute([$eventId]);
+    public function setEventApprovalStatus($eventId, $status) {
+        $stmt = $this->db->prepare("UPDATE events SET is_approved = :status WHERE id = :eventId");
+        return $stmt->execute([':status' => $status, ':eventId' => $eventId]);
     }
 
     public function getTotalEvents() {
