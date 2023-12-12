@@ -37,6 +37,21 @@ class Event {
         }
     }
 
+    public function getAttendees($eventId) {
+        $stmt = $this->db->prepare("
+            SELECT u.user_id, u.name, u.email
+            FROM Bookings b
+            JOIN Users u ON b.user_id = u.user_id
+            WHERE b.event_id = :eventId AND b.status = 'Attending'
+        ");
+        $stmt->bindParam(':eventId', $eventId, PDO::PARAM_INT);
+        
+        $stmt->execute();
+
+        // Fetch and return the list of attendees
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function cancelEventAttendance($eventId, $userId) {
         $stmt = $this->db->prepare("DELETE FROM Bookings WHERE event_id = :eventId AND user_id = :userId");
         $stmt->bindParam(':eventId', $eventId, PDO::PARAM_INT);

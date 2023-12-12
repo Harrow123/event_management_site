@@ -58,12 +58,12 @@ class EventController {
         $isOrganizer = ($_SESSION['user_id'] ?? null) == $event['organizer_id'];
     
         // Fetch attendees
-        $attendees = []; // Fetch attendees from the database
+        $attendees = $this->eventModel->getAttendees($eventId, ); // Fetch attendees from the database
 
-        if ($isOrganizer) {
-            // The current user is the organizer, show attendees
-            $attendees = $this->eventModel->getAttendees($eventId, );
-        }
+        // if ($isOrganizer) {
+        //     // The current user is the organizer, show attendees
+        //     $attendees = $this->eventModel->getAttendees($eventId, );
+        // }
     
         // Render the view with event details and attendees
         echo $this->twig->render('events/details.html.twig', [
